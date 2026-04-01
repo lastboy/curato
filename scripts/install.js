@@ -38,6 +38,13 @@ console.log(`  [OK]  MCP server built at ${join(CURATO_DIR, 'mcp-server', 'dist'
 
 console.log('\n  [2/3] Installing plugin...');
 
+// When installed via npx, the marketplace/curato symlink is stripped by npm.
+// Ensure the directory exists by copying plugin/ into marketplace/curato/.
+const marketplacePluginDir = join(CURATO_DIR, 'marketplace', 'curato');
+if (!existsSync(marketplacePluginDir)) {
+  cpSync(join(CURATO_DIR, 'plugin'), marketplacePluginDir, { recursive: true });
+}
+
 const marketplaceList = runCapture(CLAUDE, ['plugin', 'marketplace', 'list']);
 if (marketplaceList.stdout?.includes('curato-local')) {
   console.log('  [skip] Marketplace already registered');
