@@ -9,7 +9,7 @@ It scans, diagnoses, and repairs Claude Code developer environments.
 
 Three layers:
 - `plugin/` — Claude Code plugin (commands, agents, skills)
-- `mcp-server/` — TypeScript stdio MCP server (11 tools)
+- `mcp-server/` — TypeScript stdio MCP server (21 tools)
 - `scripts/` — Standalone shell scripts (no Claude Code dependency)
 
 ## Commands
