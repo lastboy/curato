@@ -21,7 +21,6 @@ Thumbs.db
 .claude/
 .history/
 .curato-backups/
-curato-setup.json
 smoke-test-fixture/
 
 # Shell scripts (Node.js equivalents are included)
