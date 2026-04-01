@@ -7,6 +7,8 @@
     "curato": "bin/curato.js"
   },
   "files": [
+    "README.md",
+    "LICENSE",
     "bin/",
     "scripts/*.js",
     "mcp-server/src/**/*.ts",
@@ -18,7 +20,7 @@
     "plugin/",
     "marketplace/",
     "chrome-debug.js",
-    "curato-setup.example.json"
+    "curato-setup.json"
   ],
   "workspaces": [
     "mcp-server"
