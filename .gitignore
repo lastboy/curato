@@ -12,7 +12,8 @@ mcp-server/dist/
 
 # Personal Claude Code config (contains tokens, absolute paths, org names)
 .claude/
-curato-setup.json
+# Note: curato-setup.json is tracked in this repo as a shipped template (all entries disabled).
+# In your own projects, add curato-setup.json to .gitignore to avoid committing real tokens.
 
 # Local file history (may contain old secrets)
 .history/
