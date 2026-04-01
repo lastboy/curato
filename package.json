@@ -1,6 +1,6 @@
 {
   "name": "curato",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Dev environment manager for Claude Code — scans, diagnoses, repairs, and standardizes your MCP servers, plugins, and project setup.",
   "type": "module",
   "bin": {
