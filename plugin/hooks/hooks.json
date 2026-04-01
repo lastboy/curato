@@ -1,0 +1,4 @@
+{
+  "description": "Curato — optional hooks. By default no hooks are active. Uncomment to enable.",
+  "hooks": {}
+}

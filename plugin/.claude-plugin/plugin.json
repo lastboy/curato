@@ -1,0 +1,9 @@
+{
+  "name": "curato",
+  "description": "Environment scanning, repair, and smoke-testing for Claude Code setups.",
+  "version": "0.1.0",
+  "author": {
+    "name": "Arik",
+    "email": ""
+  }
+}
