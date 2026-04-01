@@ -35,6 +35,14 @@ Three layers:
 3. **dryRun is always explicit** — `apply_setup` and `repair_setup` require `dryRun: boolean`
 4. **Tests never touch `~/.claude`** — all tests use `mkdtemp` temp directories
 
+## Contributing
+
+All changes to the curato project must go through a git PR:
+1. Create a feature branch: `git checkout -b feat/<short-description>`
+2. Make changes, build, run tests
+3. Push and open a PR against `main`
+4. Never commit directly to `main`
+
 ## Development
 
 ```bash

@@ -222,6 +222,7 @@ export interface TeamMcpEntry {
   args?: string[];
   env?: Record<string, string>;
   scope: 'user' | 'project';
+  enabled?: boolean;  // default true; set false to skip without removing
 }
 
 export interface TeamClaudeMdEntry {
@@ -232,6 +233,7 @@ export interface TeamClaudeMdEntry {
 
 export interface TeamPluginEntry {
   name: string;
+  enabled?: boolean;  // default true; set false to skip without removing
   skills?: {
     include: string[];  // active skills — only these are available in context
     exclude: string[];  // disabled skills — kept for reference, excluded by default

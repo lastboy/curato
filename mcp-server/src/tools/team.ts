@@ -60,6 +60,7 @@ function buildProposals(config: TeamSetupConfig, cwd: string): RepairProposal[] 
   // MCP servers
   if (config.mcpServers) {
     for (const [name, entry] of Object.entries(config.mcpServers) as [string, TeamMcpEntry][]) {
+      if (entry.enabled === false) continue;  // skip disabled entries without removing
       if (entry.scope === 'project') {
         const mcpJsonPath = join(cwd, '.mcp.json');
         const existing = readJson(mcpJsonPath);
@@ -123,6 +124,7 @@ function buildProposals(config: TeamSetupConfig, cwd: string): RepairProposal[] 
   if (config.plugins && config.plugins.length > 0) {
     const installed = getInstalledPlugins();
     for (const pluginEntry of config.plugins) {
+      if (typeof pluginEntry !== 'string' && pluginEntry.enabled === false) continue;  // skip disabled entries without removing
       const pluginName = resolvePluginName(pluginEntry);
       if (installed.has(pluginName)) continue;
       proposals.push({

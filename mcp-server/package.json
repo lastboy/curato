@@ -8,9 +8,9 @@
     "build": "tsc",
     "dev": "tsc --watch",
     "start": "node dist/index.js",
-    "test": "node --import tsx/esm --test 'src/__tests__/**/*.test.ts'",
-    "test:unit": "node --import tsx/esm --test 'src/__tests__/scanner/**/*.test.ts' 'src/__tests__/patcher/**/*.test.ts' 'src/__tests__/tools/**/*.test.ts'",
-    "test:integration": "node --import tsx/esm --test 'src/__tests__/integration/**/*.test.ts'"
+    "test": "node --import tsx/esm --test src/__tests__/**/*.test.ts",
+    "test:unit": "node --import tsx/esm --test src/__tests__/scanner/**/*.test.ts src/__tests__/patcher/**/*.test.ts src/__tests__/tools/**/*.test.ts",
+    "test:integration": "node --import tsx/esm --test src/__tests__/integration/**/*.test.ts"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.0.0"
