@@ -123,10 +123,17 @@ npm run test:integration  # server roundtrip + regression
 3. **Dry-run is always explicit** — mutation tools require `dryRun: boolean`
 4. **Tests never touch `~/.claude`** — all tests use temp directories
 
+## Documentation
+
+- [Architecture Overview](docs/architecture/overview.md) — how Curato is built and why
+- [Tools Reference](docs/architecture/tools-reference.md) — all 21 MCP tools
+- [Team Setup Guide](docs/architecture/team-setup.md) — config schema, inheritance, skill filtering
+- [Roadmap](docs/plan/roadmap.md) — what's next
+
 ## Platform Support
 
 - **macOS / Linux** — fully supported
-- **Windows** — planned ([roadmap](docs/WINDOWS-SUPPORT.md))
+- **Windows** — planned ([roadmap](docs/plan/roadmap.md#v030--windows-support))
 
 ## License
 
