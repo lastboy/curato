@@ -83,19 +83,23 @@ Each connector handles the full install, registration, and verification cycle fo
 
 Create a `curato-setup.json` in your project root:
 
-```jsonc
+```json
 {
   "version": 1,
-  // Inherit from a company-wide config (optional)
-  // "extends": "github:your-org/claude-setup",
   "mcpServers": {
     "your-mcp": {
       "command": "npx",
       "args": ["-y", "your-mcp-server"],
-      "scope": "project"
+      "scope": "project",
+      "enabled": true
     }
   },
-  "plugins": ["superpowers"],
+  "plugins": [
+    {
+      "name": "superpowers",
+      "enabled": false
+    }
+  ],
   "claudeMd": {
     "project": {
       "mode": "create-if-missing",
@@ -107,7 +111,7 @@ Create a `curato-setup.json` in your project root:
 
 Then run `/setup-team` in Claude Code. Every developer on the team runs the same command and gets the same environment.
 
-See [curato-setup.example.json](curato-setup.example.json) for the full schema with all options.
+See [curato-setup.json](curato-setup.json) for the full schema with all options.
 
 ## Architecture
 
