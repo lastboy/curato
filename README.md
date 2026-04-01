@@ -126,7 +126,7 @@ npm run test:integration  # server roundtrip + regression
 ## Platform Support
 
 - **macOS / Linux** — fully supported
-- **Windows** — planned ([roadmap](WINDOWS-SUPPORT.md))
+- **Windows** — planned ([roadmap](docs/WINDOWS-SUPPORT.md))
 
 ## License
 
