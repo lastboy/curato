@@ -1,0 +1,29 @@
+# Dev/test files
+mcp-server/src/__tests__/
+mcp-server/node_modules/
+*.tsbuildinfo
+*.d.ts.map
+*.js.map
+
+# Docs and meta
+docs/
+.github/
+.gitignore
+CLAUDE.md
+
+# IDE / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Local config
+.claude/
+.history/
+.curato-backups/
+curato-setup.json
+smoke-test-fixture/
+
+# Shell scripts (Node.js equivalents are included)
+scripts/*.sh
+chrome-debug.sh

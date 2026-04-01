@@ -13,10 +13,10 @@ MCP servers break. Node versions mismatch. VS Code and CLI have separate registr
 **Prerequisites:** Node.js >= 18, [Claude Code](https://docs.anthropic.com/en/docs/claude-code) installed
 
 ```bash
-git clone git@github.com:lastboy/curato.git
-cd curato
-bash scripts/install.sh        # builds, registers plugin + MCP server
+npx curato install
 ```
+
+That's it. Curato builds the MCP server, registers the plugin, resolves your Node path, and connects to Claude Code.
 
 Then open Claude Code (VS Code or CLI) and run:
 
@@ -25,6 +25,16 @@ Then open Claude Code (VS Code or CLI) and run:
 ```
 
 Curato scans your environment, reports issues, and offers to fix them.
+
+<details>
+<summary>Alternative: install from source</summary>
+
+```bash
+git clone git@github.com:lastboy/curato.git
+cd curato
+node scripts/install.js
+```
+</details>
 
 ## Who is this for?
 

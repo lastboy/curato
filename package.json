@@ -1,9 +1,25 @@
 {
   "name": "curato",
   "version": "0.1.0",
-  "description": "Claude Code environment scanning, repair, and smoke-testing toolkit",
+  "description": "Dev environment manager for Claude Code — scans, diagnoses, repairs, and standardizes your MCP servers, plugins, and project setup.",
   "type": "module",
-  "private": true,
+  "bin": {
+    "curato": "bin/curato.js"
+  },
+  "files": [
+    "bin/",
+    "scripts/*.js",
+    "mcp-server/src/**/*.ts",
+    "!mcp-server/src/__tests__/",
+    "mcp-server/dist/**/*.js",
+    "mcp-server/dist/**/*.d.ts",
+    "mcp-server/package.json",
+    "mcp-server/tsconfig.json",
+    "plugin/",
+    "marketplace/",
+    "chrome-debug.js",
+    "curato-setup.example.json"
+  ],
   "workspaces": [
     "mcp-server"
   ],
@@ -13,6 +29,29 @@
     "test:unit": "npm run test:unit --workspace=mcp-server",
     "test:integration": "npm run test:integration --workspace=mcp-server",
     "start": "npm run start --workspace=mcp-server",
-    "install:curato": "bash scripts/install.sh"
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "claude",
+    "claude-code",
+    "mcp",
+    "model-context-protocol",
+    "developer-tools",
+    "environment-manager",
+    "devops",
+    "team-setup"
+  ],
+  "author": "lastboy",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lastboy/curato.git"
+  },
+  "homepage": "https://github.com/lastboy/curato",
+  "bugs": {
+    "url": "https://github.com/lastboy/curato/issues"
+  },
+  "engines": {
+    "node": ">=18.0.0"
   }
 }
