@@ -1,7 +1,7 @@
 import { test, describe } from 'node:test';
 import assert from 'node:assert/strict';
 import { mkdtempSync, rmSync } from 'node:fs';
-import { join } from 'node:path';
+import { join, basename } from 'node:path';
 import { tmpdir } from 'node:os';
 import { dispatch } from '../../tools/index.js';
 import { scaffoldFixture } from '../../smoketest/scaffold.js';
@@ -22,7 +22,7 @@ describe('create_smoke_test_app', () => {
       const result = await dispatch('create_smoke_test_app', { targetDir: dir });
       const data = JSON.parse(result.content[0].text) as { created: string[]; filesCreated: number };
       assert.ok(Array.isArray(data.created));
-      const names = data.created.map((p) => p.split('/').pop()!);
+      const names = data.created.map((p) => basename(p));
       assert.ok(names.includes('package.json'), 'package.json should be created');
       assert.ok(names.includes('CLAUDE.md'), 'CLAUDE.md should be created');
     } finally {
@@ -42,7 +42,7 @@ describe('scaffoldFixture directly', () => {
     const dir = mkdtempSync(join(tmpdir(), 'curato-scaffold-'));
     try {
       const created = scaffoldFixture(dir);
-      const names = created.map((p) => p.split('/').pop()!);
+      const names = created.map((p) => basename(p));
       assert.ok(names.includes('package.json'));
       assert.ok(names.includes('CLAUDE.md'));
       assert.ok(names.includes('settings.local.json'));
