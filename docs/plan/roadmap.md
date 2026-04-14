@@ -32,21 +32,22 @@ Make installation zero-effort.
 
 Full Windows support without requiring WSL.
 
-### Planned
-- [ ] Real Windows machine smoke test (see [WINDOWS-SUPPORT.md](WINDOWS-SUPPORT.md))
-- [ ] Validate `%APPDATA%\Claude` vs `~/.claude` path detection
-- [ ] Verify nvm-windows (`NVM_HOME`) integration
-- [ ] Verify Chrome DevTools on Windows
-- [ ] Remove or deprecate `.sh` scripts — Node.js scripts are the primary
-- [ ] CI matrix: macOS + Linux + Windows
+See [WINDOWS-SUPPORT.md](WINDOWS-SUPPORT.md) for the full phased plan.
 
-### Already Done (code-level)
-- [x] `platform.ts` — centralized cross-platform helpers
-- [x] All MCP server code uses platform abstractions
+### Done
+- [x] `platform.ts` — centralized cross-platform helpers (`claudeBin`, `whichCmd`, `pathSep`, `tmpDir`, `getClaudeDir`, `chromeCandidates`)
+- [x] All Claude CLI subprocess calls use `claudeBin()`
+- [x] Cross-platform test runner (`run-tests.js`) — no shell glob expansion
+- [x] CI matrix: macOS + Linux + Windows (`windows-latest`)
 - [x] Node.js equivalents for all shell scripts
-- [x] Windows-aware tests with `setPlatformOverride`
+- [x] Regression test coverage for all 21 MCP tools
 
-See [WINDOWS-SUPPORT.md](WINDOWS-SUPPORT.md) for the full spec and [TODO-WINDOWS.md](TODO-WINDOWS.md) for task-level tracking.
+### Remaining
+- [ ] `chrome.ts` — remove `bash` dependency, cross-platform launcher script
+- [ ] `mcp.ts` — replace `pkill` with Windows-safe process termination (verify process name first)
+- [ ] Path centralization — ~9 files still use `join(homedir(), '.claude')` directly
+- [ ] Fix scan messages referencing `bash scripts/install.sh`
+- [ ] Real Windows machine smoke test (blocks "officially supported" label)
 
 ## v0.4.0 — More Connectors
 
