@@ -5,9 +5,8 @@ import { scanPluginState } from '../scanner/plugin-state.js';
 import { backupFile } from '../patcher/backup.js';
 import { existsSync, readFileSync, writeFileSync, readdirSync, rmSync } from 'node:fs';
 import { join } from 'node:path';
-import { homedir } from 'node:os';
 import { spawnSync } from 'node:child_process';
-import { claudeBin } from '../utils/platform.js';
+import { claudeBin, getClaudeDir } from '../utils/platform.js';
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -59,7 +58,7 @@ register(
   },
   async (args) => {
     const { pluginName, dryRun } = args as RemovePluginParams;
-    const pluginsJsonPath = join(homedir(), '.claude', 'plugins', 'installed_plugins.json');
+    const pluginsJsonPath = join(getClaudeDir(), 'plugins','installed_plugins.json');
     const installed = readInstalledPlugins(pluginsJsonPath);
 
     // Find all entries matching this plugin name (key: "<pluginName>@<marketplace>")
@@ -137,7 +136,7 @@ register(
   },
   async (args) => {
     const { pluginName, marketplaceName, dryRun } = args as ClearPluginCacheParams;
-    const cacheRoot = join(homedir(), '.claude', 'plugins', 'cache');
+    const cacheRoot = join(getClaudeDir(), 'plugins','cache');
 
     const targetDirs: string[] = [];
     const errors: string[] = [];

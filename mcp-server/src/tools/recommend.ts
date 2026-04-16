@@ -4,11 +4,10 @@ import type { RepairProposal, RecommendSetupParams } from '../types.js';
 import { buildNodeChecks, buildUserChecks, buildProjectChecks, buildPluginChecks, buildMcpChecks } from './scan.js';
 import { readFileSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
-import { homedir } from 'node:os';
 import { scanNodeRuntime } from '../scanner/node-runtime.js';
 import { scanMcpRegistry } from '../scanner/mcp-registry.js';
 import { readSettingsJson } from '../scanner/claude-config.js';
-import { pathSep, isWin } from '../utils/platform.js';
+import { pathSep, isWin, getClaudeDir, getClaudeJsonPath } from '../utils/platform.js';
 
 const CLAUDE_MD_TEMPLATE = `# Project
 
@@ -56,7 +55,7 @@ export function buildRepairProposals(
 
   for (const check of fixable) {
     if (check.id === 'user.settings') {
-      const targetPath = join(homedir(), '.claude', 'settings.json');
+      const targetPath = join(getClaudeDir(), 'settings.json');
       proposals.push({
         check,
         action: 'create-if-missing',
@@ -64,7 +63,7 @@ export function buildRepairProposals(
         after: SETTINGS_JSON_TEMPLATE,
       });
     } else if (check.id === 'user.claude-md') {
-      const targetPath = join(homedir(), '.claude', 'CLAUDE.md');
+      const targetPath = join(getClaudeDir(), 'CLAUDE.md');
       proposals.push({
         check,
         action: 'create-if-missing',
@@ -98,7 +97,7 @@ export function buildRepairProposals(
       const serverName = check.id.slice('mcp.gap-vscode.'.length);
       const entry = scanMcpRegistry(cwd).find((e) => e.name === serverName && e.source === 'cli');
       if (entry) {
-        const targetPath = join(homedir(), '.claude', 'settings.json');
+        const targetPath = join(getClaudeDir(), 'settings.json');
         const settings = readSettingsJson();
         const mcpServers = (settings['mcpServers'] as Record<string, unknown> | undefined) ?? {};
         const newEntry: Record<string, unknown> = { command: entry.command };
@@ -116,7 +115,7 @@ export function buildRepairProposals(
         proposals.push({
           check,
           action: 'run-command',
-          targetPath: join(homedir(), '.claude.json'),
+          targetPath: getClaudeJsonPath(),
           command: ['claude', ...args],
           after: `claude ${args.join(' ')}`,
         });
@@ -126,7 +125,7 @@ export function buildRepairProposals(
       // nodePath is e.g. /Users/arik/.nvm/versions/node/v24.13.1/bin/node
       const nvmBin = nodePath !== 'unknown' ? nodePath.replace(/\/node$/, '') : '';
       if (nvmBin) {
-        const targetPath = join(homedir(), '.claude', 'settings.json');
+        const targetPath = join(getClaudeDir(), 'settings.json');
         const settings = readSettingsJson();
         const existingEnv = (settings['env'] as Record<string, string> | undefined) ?? {};
         const existingPath = existingEnv['PATH'] ?? '';
@@ -141,7 +140,7 @@ export function buildRepairProposals(
       const serverName = check.id.slice('mcp.nvm-unsafe.'.length);
       const entry = scanMcpRegistry(cwd).find((e) => e.name === serverName);
       if (entry?.binaryPath) {
-        const targetPath = join(homedir(), '.claude', 'settings.json');
+        const targetPath = join(getClaudeDir(), 'settings.json');
         const settings = readSettingsJson();
         const mcpServers = (settings['mcpServers'] as Record<string, unknown> | undefined) ?? {};
         if (mcpServers[serverName] && typeof mcpServers[serverName] === 'object') {

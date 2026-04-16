@@ -1,7 +1,7 @@
 import { existsSync, readdirSync, statSync, renameSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { homedir } from 'node:os';
 import { backupFile } from './backup.js';
+import { getClaudeDir } from '../utils/platform.js';
 
 // ── Types ──────────────────────────────────────────────────────────────────────
 
@@ -44,7 +44,7 @@ function estimateTokens(bytes: number): number {
  * Pass `_cacheRoot` to override the default (useful in tests).
  */
 export function findPluginCachePath(pluginName: string, _cacheRoot?: string): string | null {
-  const cacheRoot = _cacheRoot ?? join(homedir(), '.claude', 'plugins', 'cache');
+  const cacheRoot = _cacheRoot ?? join(getClaudeDir(), 'plugins', 'cache');
   if (!existsSync(cacheRoot)) return null;
 
   let best: string | null = null;

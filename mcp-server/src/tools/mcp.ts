@@ -8,9 +8,8 @@ import { removeMcpServer } from '../patcher/mcp-remover.js';
 import { safeMerge } from '../patcher/json-merger.js';
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { join, dirname } from 'node:path';
-import { homedir } from 'node:os';
 import { spawnSync } from 'node:child_process';
-import { isWin } from '../utils/platform.js';
+import { isWin, getClaudeJsonPath } from '../utils/platform.js';
 
 register(
   {
@@ -37,7 +36,7 @@ register(
     const vsResult = registerMcpServer({ serverName, entry, dryRun });
 
     // --- CLI registry: ~/.claude.json ---
-    const claudeJsonPath = join(homedir(), '.claude.json');
+    const claudeJsonPath = getClaudeJsonPath();
     let claudeJson: Record<string, unknown> = {};
     if (existsSync(claudeJsonPath)) {
       try {

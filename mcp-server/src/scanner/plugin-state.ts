@@ -1,7 +1,7 @@
 import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
-import { homedir } from 'node:os';
 import type { PluginInfo } from '../types.js';
+import { getClaudeDir } from '../utils/platform.js';
 
 interface PluginJson {
   name?: unknown;
@@ -65,7 +65,7 @@ function getMarketplaceDirs(): string[] {
   const dirs: string[] = [];
 
   // Standard marketplace dirs under ~/.claude/plugins/marketplaces/
-  const marketplacesDir = join(homedir(), '.claude', 'plugins', 'marketplaces');
+  const marketplacesDir = join(getClaudeDir(), 'plugins','marketplaces');
   if (existsSync(marketplacesDir)) {
     try {
       for (const m of readdirSync(marketplacesDir)) {
@@ -75,7 +75,7 @@ function getMarketplaceDirs(): string[] {
   }
 
   // Extra marketplaces from known_marketplaces.json (e.g. local directory marketplaces)
-  const knownPath = join(homedir(), '.claude', 'plugins', 'known_marketplaces.json');
+  const knownPath = join(getClaudeDir(), 'plugins','known_marketplaces.json');
   if (existsSync(knownPath)) {
     try {
       const known = JSON.parse(readFileSync(knownPath, 'utf8')) as Record<string, unknown>;
