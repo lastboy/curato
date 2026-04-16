@@ -86,26 +86,54 @@ Create a `curato-setup.json` in your project root:
 ```json
 {
   "version": 1,
+
   "mcpServers": {
-    "your-mcp": {
-      "command": "npx",
-      "args": ["-y", "your-mcp-server"],
-      "scope": "project",
-      "enabled": true
+    "chrome-devtools": {
+      "command": "chrome-devtools-mcp",
+      "args": ["--browserUrl", "http://127.0.0.1:9222"],
+      "scope": "user",
+      "enabled": false
+    },
+    "azure-devops": {
+      "command": "azure-devops-mcp-server",
+      "args": [
+        "your-ado-org",
+        "-d", "repositories", "work-items", "wiki",
+        "--authentication", "envvar"
+      ],
+      "env": {
+        "ADO_MCP_AUTH_TOKEN": "${ADO_MCP_AUTH_TOKEN}"
+      },
+      "scope": "user",
+      "enabled": false
     }
   },
+
   "plugins": [
     {
       "name": "superpowers",
-      "enabled": false
+      "enabled": false,
+      "skills": {
+        "include": [
+          "brainstorming",
+          "systematic-debugging",
+          "test-driven-development",
+          "writing-plans",
+          "verification-before-completion",
+          "executing-plans",
+          "dispatching-parallel-agents",
+          "requesting-code-review"
+        ],
+        "exclude": [
+          "writing-skills",
+          "subagent-driven-development",
+          "receiving-code-review",
+          "using-git-worktrees",
+          "finishing-a-development-branch"
+        ]
+      }
     }
-  ],
-  "claudeMd": {
-    "project": {
-      "mode": "create-if-missing",
-      "content": "# My Project\n\nProject standards here."
-    }
-  }
+  ]
 }
 ```
 
