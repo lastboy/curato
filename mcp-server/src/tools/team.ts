@@ -1,8 +1,7 @@
 import { existsSync, readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { join, dirname } from 'node:path';
-import { homedir } from 'node:os';
 import { spawnSync } from 'node:child_process';
-import { claudeBin } from '../utils/platform.js';
+import { claudeBin, getClaudeDir, getClaudeJsonPath } from '../utils/platform.js';
 import { register } from './index.js';
 import { toolResult } from '../types.js';
 import type { RepairProposal, RepairReport, ApplyTeamSetupParams, TeamSetupConfig, TeamMcpEntry, TeamPluginEntry } from '../types.js';
@@ -55,7 +54,7 @@ function getInstalledPlugins(): Set<string> {
 
 function buildProposals(config: TeamSetupConfig, cwd: string): RepairProposal[] {
   const proposals: RepairProposal[] = [];
-  const userHome = homedir();
+  const claudeDir = getClaudeDir();
 
   // MCP servers
   if (config.mcpServers) {
@@ -84,8 +83,8 @@ function buildProposals(config: TeamSetupConfig, cwd: string): RepairProposal[] 
         });
       } else {
         // user scope → must be in BOTH registries
-        const settingsPath = join(userHome, '.claude', 'settings.json');
-        const claudeJsonPath = join(userHome, '.claude.json');
+        const settingsPath = join(claudeDir, 'settings.json');
+        const claudeJsonPath = getClaudeJsonPath();
 
         const vsCodeSettings = readJson(settingsPath);
         const vsCodeServers = (vsCodeSettings['mcpServers'] as Record<string, unknown>) ?? {};
@@ -177,7 +176,7 @@ function buildProposals(config: TeamSetupConfig, cwd: string): RepairProposal[] 
   // CLAUDE.md — user scope
   if (config.claudeMd?.user) {
     const entry = config.claudeMd.user;
-    const targetPath = join(userHome, '.claude', 'CLAUDE.md');
+    const targetPath = join(claudeDir, 'CLAUDE.md');
     const before = existsSync(targetPath) ? readFileSync(targetPath, 'utf8') : undefined;
 
     if (entry.mode === 'append-if-missing-section') {
@@ -244,7 +243,7 @@ function applyProposals(proposals: RepairProposal[]): { applied: RepairProposal[
         if (vsResult.backupDir) backupDirs.push(vsResult.backupDir);
 
         // CLI registry: ~/.claude.json
-        const claudeJsonPath = join(homedir(), '.claude.json');
+        const claudeJsonPath = getClaudeJsonPath();
         const claudeJson = readJson(claudeJsonPath);
         const cliServers = (claudeJson['mcpServers'] as Record<string, unknown>) ?? {};
         if (!(serverName in cliServers)) {

@@ -8,9 +8,8 @@ import { removeMcpServer } from '../patcher/mcp-remover.js';
 import { safeMerge } from '../patcher/json-merger.js';
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { join, dirname } from 'node:path';
-import { homedir } from 'node:os';
-import { execSync, spawnSync } from 'node:child_process';
-import { isWin } from '../utils/platform.js';
+import { spawnSync } from 'node:child_process';
+import { isWin, getClaudeJsonPath } from '../utils/platform.js';
 
 register(
   {
@@ -37,7 +36,7 @@ register(
     const vsResult = registerMcpServer({ serverName, entry, dryRun });
 
     // --- CLI registry: ~/.claude.json ---
-    const claudeJsonPath = join(homedir(), '.claude.json');
+    const claudeJsonPath = getClaudeJsonPath();
     let claudeJson: Record<string, unknown> = {};
     if (existsSync(claudeJsonPath)) {
       try {
@@ -90,12 +89,19 @@ register(
     let killed = false;
     try {
       if (isWin()) {
-        // TODO: verify exact process name on Windows before relying on this
-        const r = spawnSync('taskkill', ['/F', '/IM', 'mcp-server-azuredevops.exe'], { stdio: 'ignore' });
+        // azure-devops-mcp-server runs as node.exe on Windows — find by command line.
+        // taskkill /IM targets a .exe name, which won't match node scripts directly.
+        // Using WMIC to match by command line is the reliable approach.
+        // TODO: confirm the exact command-line fragment on a real Windows machine.
+        const r = spawnSync(
+          'wmic',
+          ['process', 'where', 'commandline like \'%azure-devops-mcp%\'', 'delete'],
+          { stdio: 'ignore' },
+        );
         killed = r.status === 0;
       } else {
-        execSync('pkill -f "azure-devops-mcp-server"', { stdio: 'ignore' });
-        killed = true;
+        const r = spawnSync('pkill', ['-f', 'azure-devops-mcp-server'], { stdio: 'ignore' });
+        killed = r.status === 0;
       }
     } catch { /* none running */ }
 

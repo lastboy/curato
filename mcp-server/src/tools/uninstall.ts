@@ -4,9 +4,8 @@ import type { UninstallCuratoParams, UninstallReport } from '../types.js';
 import { backupFile } from '../patcher/backup.js';
 import { existsSync, readFileSync, writeFileSync, readdirSync, rmSync } from 'node:fs';
 import { join } from 'node:path';
-import { homedir } from 'node:os';
 import { spawnSync } from 'node:child_process';
-import { claudeBin } from '../utils/platform.js';
+import { claudeBin, getClaudeDir, getClaudeJsonPath } from '../utils/platform.js';
 
 register(
   {
@@ -24,11 +23,10 @@ register(
   async (args) => {
     const { dryRun } = args as UninstallCuratoParams;
 
-    const home = homedir();
-    const pluginsJsonPath = join(home, '.claude', 'plugins', 'installed_plugins.json');
-    const settingsJsonPath = join(home, '.claude', 'settings.json');
-    const claudeJsonPath = join(home, '.claude.json');
-    const cacheRoot = join(home, '.claude', 'plugins', 'cache');
+    const pluginsJsonPath = join(getClaudeDir(), 'plugins', 'installed_plugins.json');
+    const settingsJsonPath = join(getClaudeDir(), 'settings.json');
+    const claudeJsonPath = getClaudeJsonPath();
+    const cacheRoot = join(getClaudeDir(), 'plugins', 'cache');
 
     // ── Discover ────────────────────────────────────────────────────────────
 

@@ -1,8 +1,8 @@
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { homedir } from 'node:os';
 import { safeMerge } from './json-merger.js';
 import { backupFile } from './backup.js';
+import { getClaudeDir } from '../utils/platform.js';
 
 export interface McpRegistrationEntry {
   command: string;
@@ -30,7 +30,7 @@ export function registerMcpServer(opts: {
   settingsPath?: string;
 }): RegisterMcpResult {
   const settingsPath =
-    opts.settingsPath ?? join(homedir(), '.claude', 'settings.json');
+    opts.settingsPath ?? join(getClaudeDir(), 'settings.json');
 
   let settings: Record<string, unknown> = {};
   if (existsSync(settingsPath)) {

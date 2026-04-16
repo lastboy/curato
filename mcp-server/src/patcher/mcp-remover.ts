@@ -1,7 +1,7 @@
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { homedir } from 'node:os';
 import { backupFile } from './backup.js';
+import { getClaudeDir, getClaudeJsonPath } from '../utils/platform.js';
 
 export interface RemoveMcpResult {
   serverName: string;
@@ -46,9 +46,9 @@ export function removeMcpServer(opts: RemoveMcpOptions): RemoveMcpResult {
     serverName,
     dryRun,
     cwd = process.cwd(),
-    settingsJsonPath = join(homedir(), '.claude', 'settings.json'),
-    settingsLocalJsonPath = join(homedir(), '.claude', 'settings.local.json'),
-    claudeJsonPath = join(homedir(), '.claude.json'),
+    settingsJsonPath = join(getClaudeDir(), 'settings.json'),
+    settingsLocalJsonPath = join(getClaudeDir(), 'settings.local.json'),
+    claudeJsonPath = getClaudeJsonPath(),
     mcpJsonPath = join(cwd, '.mcp.json'),
   } = opts;
 
