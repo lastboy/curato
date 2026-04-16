@@ -7,6 +7,7 @@ import { join, dirname } from 'node:path';
 import { homedir } from 'node:os';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
+import { repairStaleMarketplaceEntry } from './lib/marketplace-repair.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const CURATO_DIR = join(__dirname, '..');
@@ -45,20 +46,39 @@ if (!existsSync(marketplacePluginDir)) {
   cpSync(join(CURATO_DIR, 'plugin'), marketplacePluginDir, { recursive: true });
 }
 
+// Repair stale marketplace entry — older curato versions stored `source` as a plain string.
+// Newer Claude Code validates `source` as a typed object and rejects the old format with
+// "curato-local.source.source: Invalid input". Clear it so the add command starts fresh.
+const knownMarketplacesPath = join(homedir(), '.claude', 'plugins', 'known_marketplaces.json');
+const repairResult = repairStaleMarketplaceEntry(knownMarketplacesPath);
+if (repairResult.repaired) {
+  console.log('  [fix]  Removed stale curato-local marketplace entry (old source format)');
+}
+
 const marketplaceList = runCapture(CLAUDE, ['plugin', 'marketplace', 'list']);
 if (marketplaceList.stdout?.includes('curato-local')) {
   console.log('  [skip] Marketplace already registered');
 } else {
-  run(CLAUDE, ['plugin', 'marketplace', 'add', join(CURATO_DIR, 'marketplace')]);
-  console.log('  [OK]  Marketplace registered');
+  const addResult = runCapture(CLAUDE, ['plugin', 'marketplace', 'add', join(CURATO_DIR, 'marketplace')]);
+  if (addResult.status !== 0) {
+    console.error(`  [warn] Marketplace add exited with code ${addResult.status}`);
+    if (addResult.stderr) process.stderr.write(addResult.stderr);
+  } else {
+    console.log('  [OK]  Marketplace registered');
+  }
 }
 
 const pluginList = runCapture(CLAUDE, ['plugin', 'list']);
 if (pluginList.stdout?.includes('curato')) {
   console.log('  [skip] Plugin already installed');
 } else {
-  run(CLAUDE, ['plugin', 'install', 'curato']);
-  console.log('  [OK]  Plugin installed');
+  const installResult = runCapture(CLAUDE, ['plugin', 'install', 'curato']);
+  if (installResult.status !== 0) {
+    console.error(`  [warn] Plugin install exited with code ${installResult.status}`);
+    if (installResult.stderr) process.stderr.write(installResult.stderr);
+  } else {
+    console.log('  [OK]  Plugin installed');
+  }
 }
 
 // Bust plugin cache so updated command/agent/skill files are picked up
