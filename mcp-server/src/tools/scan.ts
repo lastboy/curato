@@ -176,8 +176,8 @@ export function buildPluginChecks(): CheckResult[] {
       ? curatoPlugin.valid
         ? `Installed v${curatoPlugin.version ?? 'unknown'}`
         : `Installed but has issues: ${curatoPlugin.issues.join(', ')}`
-      : 'curato plugin not installed — run scripts/install.sh',
-    fix: curatoPlugin ? undefined : 'Run: bash scripts/install.sh',
+      : 'curato plugin not installed — run: node scripts/install.js',
+    fix: curatoPlugin ? undefined : 'Run: node scripts/install.js',
     fixable: false,
   });
 
@@ -265,12 +265,12 @@ export function buildMcpChecks(cwd: string): CheckResult[] {
       ? curatoEntry.binaryResolvable
         ? `Registered (${curatoEntry.registeredIn}), binary OK at ${curatoEntry.binaryPath}`
         : `Registered but binary not found: ${curatoEntry.command}`
-      : 'curato MCP server not registered — run scripts/install.sh',
+      : 'curato MCP server not registered — run: node scripts/install.js',
     fix: curatoEntry
       ? curatoEntry.binaryResolvable
         ? undefined
-        : 'Run: cd mcp-server && npm run build, then scripts/install.sh'
-      : 'Run: bash scripts/install.sh',
+        : 'Run: cd mcp-server && npm run build, then node scripts/install.js'
+      : 'Run: node scripts/install.js',
     fixable: false,
   });
 
