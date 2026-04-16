@@ -3,6 +3,7 @@ import { join } from 'node:path';
 import { spawnSync } from 'node:child_process';
 import type { McpServerEntry } from '../types.js';
 import { getClaudeDir, readSettingsJson, readClaudeJson } from './claude-config.js';
+import { whichCmd } from '../utils/platform.js';
 
 interface RawMcpEntry {
   command?: unknown;
@@ -18,9 +19,7 @@ function resolveBinary(command: string | undefined): { resolvable: boolean; path
   if (command.startsWith('/') || /^[A-Za-z]:\\/.test(command)) {
     return { resolvable: existsSync(command), path: command };
   }
-  // Use 'where' on Windows, 'which' on Unix
-  const whichCmd = process.platform === 'win32' ? 'where' : 'which';
-  const result = spawnSync(whichCmd, [command], { encoding: 'utf8' });
+  const result = spawnSync(whichCmd(), [command], { encoding: 'utf8' });
   if (result.status === 0 && result.stdout) {
     // 'where' on Windows may return multiple lines — take the first
     const resolved = result.stdout.trim().split('\n')[0]?.trim() ?? '';
