@@ -130,7 +130,7 @@ description: What your command does
 allowed-tools: ["Bash", "AskUserQuestion"]
 ---
 
-Run: `npx -y curato your-command`
+Run: `curato your-command`
 ```
 
 ---
