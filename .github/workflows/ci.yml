@@ -22,13 +22,13 @@ jobs:
           node-version: ${{ matrix.node-version }}
 
       - name: Install dependencies
-        working-directory: mcp-server
+        working-directory: cli
         run: npm install
 
       - name: Build
-        working-directory: mcp-server
+        working-directory: cli
         run: npm run build
 
       - name: Run tests
-        working-directory: mcp-server
+        working-directory: cli
         run: npm run test
