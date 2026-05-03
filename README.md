@@ -36,14 +36,13 @@ npm install -g curato
 #    then apply it
 curato setup
 
-# 3. Install the curato plugin so slash commands work inside Claude Code
-curato install curato
-
-# 4. Verify everything is wired up
+# 3. Verify everything is wired up
 curato scan
 ```
 
 Reload Claude Code after setup. That's it.
+
+> **Optional:** `curato install curato` installs slash commands (`/doctor`, `/scan`, `/setup-team`) directly inside Claude Code chat. Not required — the CLI works standalone.
 
 ### Example: Chrome DevTools
 
