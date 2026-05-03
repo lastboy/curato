@@ -32,9 +32,10 @@ MCP servers break. Node versions mismatch. VS Code and CLI have separate registr
 # 1. Install curato globally
 npm install -g curato
 
-# 2. Create a curato-setup.json in your project (see Config Reference below)
-#    then apply it — default name or a custom one
+# 2. Create a curato-setup.json and apply it
 curato setup
+
+# Or use a custom config name (e.g. a personal local file)
 curato setup --config curato-setup-my.json
 
 # 3. Verify everything is wired up
