@@ -1,12 +1,23 @@
 # Curato
 
-**Install once. Everything works.**
+**A CLI that sets up your Claude Code environment — not an MCP server.**
 
-Curato is a CLI tool and Claude Code plugin for managing developer environments. It installs plugins with skill filters, registers MCP servers in both VS Code and CLI registries, scans your setup for issues, and applies team-wide config from a single JSON file.
+Curato installs plugins, registers MCP servers, filters which skills are active, and applies team-wide config. It runs only when you call it — no background process, no tool schemas in your context window.
+
+> **Why CLI instead of MCP?**
+> The old Curato ran as an MCP server, injecting ~21 tool schemas into every session before you typed a word (~4,000–6,000 tokens wasted per session). This version is a plain CLI: zero token cost at startup, runs only on demand.
+
+## What it does
+
+- **Installs and uninstalls Claude Code plugins**
+- **Filters plugin skills** — disable the ones you don't use to save context tokens at startup
+- **Registers MCP servers** (Azure DevOps, Chrome DevTools, etc.) in both VS Code and CLI registries
+- **Applies team config** from a single `curato-setup.json` — one command to standardize every developer's setup
+- **Scans and repairs** your environment when things break
 
 ## The Problem
 
-MCP servers break. Node versions mismatch. VS Code and CLI have separate registries that don't sync. Plugins need manual cache clearing. Every developer on your team has a different Claude Code setup. There's no `package.json` for your Claude Code environment — until now.
+MCP servers break. Node versions mismatch. VS Code and CLI have separate registries that don't sync. Plugins load every skill into context even if you never use them. Every developer on your team has a different Claude Code setup. There's no `package.json` for your Claude Code environment — until now.
 
 ## Prerequisites
 
