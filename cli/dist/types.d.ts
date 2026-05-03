@@ -33,17 +33,6 @@ export interface RepairReport {
     applied: RepairProposal[];
     backupDir?: string;
 }
-export interface SmokeTestResult {
-    step: string;
-    passed: boolean;
-    output?: string;
-    error?: string;
-}
-export interface SmokeTestReport {
-    passed: boolean;
-    steps: SmokeTestResult[];
-    fixturePath: string;
-}
 export interface NodeRuntimeInfo {
     nodeVersion: string;
     nodeMinMet: boolean;
@@ -93,86 +82,6 @@ export interface UserSetupInfo {
     pluginsDirExists: boolean;
     installedPlugins: PluginInfo[];
 }
-export interface ScanEnvironmentParams {
-    cwd?: string;
-    scope?: 'user' | 'project' | 'full';
-}
-export interface InspectUserSetupParams {
-}
-export interface InspectProjectSetupParams {
-    cwd?: string;
-}
-export interface RecommendSetupParams {
-    cwd?: string;
-    goals?: string[];
-}
-export interface ApplySetupParams {
-    cwd?: string;
-    dryRun: boolean;
-    targets?: string[];
-}
-export interface RepairSetupParams {
-    checkIds: string[];
-    cwd?: string;
-    dryRun: boolean;
-}
-export interface CheckNodeRuntimeParams {
-}
-export interface CheckPluginStateParams {
-    pluginName?: string;
-}
-export interface CheckMcpRegistrationParams {
-    serverName?: string;
-    cwd?: string;
-}
-export interface CreateSmokeTestAppParams {
-    targetDir: string;
-}
-export interface RunSmokeTestParams {
-    fixtureDir?: string;
-}
-export interface ApplyTeamSetupParams {
-    configPath?: string;
-    cwd?: string;
-    dryRun: boolean;
-}
-export interface RemoveMcpServerParams {
-    serverName: string;
-    dryRun: boolean;
-}
-export interface RegisterMcpBothParams {
-    serverName: string;
-    command: string;
-    args?: string[];
-    env?: Record<string, string>;
-    dryRun: boolean;
-}
-export interface RemovePluginParams {
-    pluginName: string;
-    dryRun: boolean;
-}
-export interface ClearPluginCacheParams {
-    pluginName?: string;
-    marketplaceName?: string;
-    dryRun: boolean;
-}
-export interface UninstallCuratoParams {
-    dryRun: boolean;
-}
-export interface ClearCacheResult {
-    dryRun: boolean;
-    cleared: string[];
-    skipped: string[];
-    errors: string[];
-}
-export interface UninstallReport {
-    dryRun: boolean;
-    pluginsRemoved: string[];
-    mcpServersRemoved: string[];
-    cacheDirsCleared: string[];
-    backupDirs?: string[];
-    errors: string[];
-}
 export interface TeamMcpEntry {
     command: string;
     args?: string[];
@@ -219,22 +128,4 @@ export interface TeamSetupConfig {
         user?: TeamClaudeMdEntry;
     };
 }
-export declare const StatusMessages: {
-    readonly scanStart: "Scanning environment...";
-    readonly scanDone: "Scan complete.";
-    readonly repairStart: "Preparing repairs...";
-    readonly repairDone: "Repairs applied.";
-    readonly smokeStart: "Running smoke test...";
-    readonly smokeDone: "Smoke test complete.";
-    readonly dryRun: "Dry-run mode — no changes will be applied.";
-    readonly backupNote: (dir: string) => string;
-    readonly operational: "Curato is operational.";
-    readonly anomaly: (n: number) => string;
-};
-export declare function toolResult(data: unknown): {
-    content: Array<{
-        type: 'text';
-        text: string;
-    }>;
-};
 //# sourceMappingURL=types.d.ts.map

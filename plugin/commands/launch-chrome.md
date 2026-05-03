@@ -4,7 +4,7 @@ argument-hint: "[url]"
 allowed-tools: ["Bash"]
 ---
 
-Run: `npx -y curato launch-chrome "$ARGUMENTS" 2>&1`
+Run: `curato launch-chrome "$ARGUMENTS" 2>&1`
 
 If `$ARGUMENTS` is empty, the command defaults to `http://localhost:3000`.
 

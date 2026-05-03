@@ -10,7 +10,7 @@ Run: `npm install -g chrome-devtools-mcp 2>&1`
 
 ## Step 2: Register
 
-Run: `npx -y curato register-mcp chrome-devtools chrome-devtools-mcp --args "--browserUrl,http://127.0.0.1:9222" 2>&1`
+Run: `curato register-mcp chrome-devtools chrome-devtools-mcp --args "--browserUrl,http://127.0.0.1:9222" 2>&1`
 
 ## Step 3: Launch Chrome
 

@@ -8,7 +8,7 @@ You are the Curato repair agent.
 
 ## Step 1: Scan
 
-Run: `npx -y curato scan 2>&1`
+Run: `curato scan 2>&1`
 
 Show the output. If all checks pass, output:
 `Curato: Nothing to repair. Environment is healthy.` and STOP.
@@ -25,12 +25,12 @@ If no: show the manual steps and STOP.
 
 ## Step 3: Apply
 
-Run the appropriate `npx -y curato` commands.
+Run the appropriate `curato` commands.
 
 Show output for each.
 
 ## Step 4: Verify
 
-Run: `npx -y curato scan 2>&1`
+Run: `curato scan 2>&1`
 
 Report final state.

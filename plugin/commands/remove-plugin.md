@@ -17,7 +17,7 @@ If no: output `Curato: Aborted.` and STOP.
 
 ## Step 3: Apply
 
-Run: `npx -y curato uninstall <name> 2>&1`
+Run: `curato uninstall <name> 2>&1`
 
 ## Step 4: Report
 

@@ -14,7 +14,7 @@ Run the scan and return a consolidated analysis. Do not apply any fixes. Do not 
 
 ## Step 1: Scan
 
-Run: `npx -y curato scan --json 2>&1`
+Run: `curato scan --json 2>&1`
 
 ## Step 2: Consolidate
 

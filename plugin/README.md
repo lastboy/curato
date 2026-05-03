@@ -23,7 +23,7 @@ Claude Code plugin providing environment scanning, repair, and smoke-testing.
 ## Install
 
 ```bash
-npx curato install curato
+curato install curato
 ```
 
 Then verify in Claude Code: `/doctor`

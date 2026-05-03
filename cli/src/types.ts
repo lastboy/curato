@@ -10,7 +10,7 @@ export interface CheckResult {
   severity: Severity;
   detail: string;    // One-line description of the finding
   fix?: string;      // Optional description of how to fix (shown in repair)
-  fixable: boolean;  // Whether repair_setup can auto-fix this
+  fixable: boolean;
 }
 
 export interface ScanReport {
@@ -35,19 +35,6 @@ export interface RepairReport {
   proposals: RepairProposal[];
   applied: RepairProposal[];  // empty when dryRun=true
   backupDir?: string;         // set when !dryRun and files were changed
-}
-
-export interface SmokeTestResult {
-  step: string;
-  passed: boolean;
-  output?: string;
-  error?: string;
-}
-
-export interface SmokeTestReport {
-  passed: boolean;
-  steps: SmokeTestResult[];
-  fixturePath: string;
 }
 
 // ============================================================
@@ -109,111 +96,6 @@ export interface UserSetupInfo {
 }
 
 // ============================================================
-// Tool parameter types (one per MCP tool)
-// ============================================================
-
-export interface ScanEnvironmentParams {
-  cwd?: string;
-  scope?: 'user' | 'project' | 'full';
-}
-
-export interface InspectUserSetupParams {
-  // no required params
-}
-
-export interface InspectProjectSetupParams {
-  cwd?: string;
-}
-
-export interface RecommendSetupParams {
-  cwd?: string;
-  goals?: string[];  // e.g. ["register-mcp", "create-claude-md"]
-}
-
-export interface ApplySetupParams {
-  cwd?: string;
-  dryRun: boolean;
-  targets?: string[];  // specific check IDs to fix; omit = fix all fixable
-}
-
-export interface RepairSetupParams {
-  checkIds: string[];  // from ScanReport.checks[].id
-  cwd?: string;
-  dryRun: boolean;
-}
-
-export interface CheckNodeRuntimeParams {
-  // no required params
-}
-
-export interface CheckPluginStateParams {
-  pluginName?: string;  // check one plugin; omit = check all
-}
-
-export interface CheckMcpRegistrationParams {
-  serverName?: string;  // check one server; omit = check all
-  cwd?: string;
-}
-
-export interface CreateSmokeTestAppParams {
-  targetDir: string;
-}
-
-export interface RunSmokeTestParams {
-  fixtureDir?: string;  // default: smoke-test-fixture/ relative to curato dir
-}
-
-export interface ApplyTeamSetupParams {
-  configPath?: string;  // defaults to ./curato-setup.json
-  cwd?: string;
-  dryRun: boolean;
-}
-
-export interface RemoveMcpServerParams {
-  serverName: string;
-  dryRun: boolean;
-}
-
-export interface RegisterMcpBothParams {
-  serverName: string;
-  command: string;
-  args?: string[];
-  env?: Record<string, string>;
-  dryRun: boolean;
-}
-
-export interface RemovePluginParams {
-  pluginName: string;
-  dryRun: boolean;
-}
-
-export interface ClearPluginCacheParams {
-  pluginName?: string;
-  marketplaceName?: string;
-  dryRun: boolean;
-}
-
-export interface UninstallCuratoParams {
-  dryRun: boolean;
-}
-
-export interface ClearCacheResult {
-  dryRun: boolean;
-  cleared: string[];
-  skipped: string[];
-  errors: string[];
-}
-
-export interface UninstallReport {
-  dryRun: boolean;
-  pluginsRemoved: string[];
-  mcpServersRemoved: string[];
-  cacheDirsCleared: string[];
-  backupDirs?: string[];
-  errors: string[];
-}
-
-// ============================================================
 // Team setup config (curato-setup.json)
 // ============================================================
 
@@ -266,32 +148,5 @@ export interface TeamSetupConfig {
   claudeMd?: {
     project?: TeamClaudeMdEntry;
     user?: TeamClaudeMdEntry;
-  };
-}
-
-// ============================================================
-// Status messages
-// ============================================================
-
-export const StatusMessages = {
-  scanStart:   'Scanning environment...',
-  scanDone:    'Scan complete.',
-  repairStart: 'Preparing repairs...',
-  repairDone:  'Repairs applied.',
-  smokeStart:  'Running smoke test...',
-  smokeDone:   'Smoke test complete.',
-  dryRun:      'Dry-run mode — no changes will be applied.',
-  backupNote:  (dir: string) => `Backup created at ${dir} before making changes.`,
-  operational: 'Curato is operational.',
-  anomaly:     (n: number) => `Detected ${n} anomal${n === 1 ? 'y' : 'ies'}.`,
-} as const;
-
-// ============================================================
-// MCP tool response helper
-// ============================================================
-
-export function toolResult(data: unknown): { content: Array<{ type: 'text'; text: string }> } {
-  return {
-    content: [{ type: 'text', text: JSON.stringify(data, null, 2) }],
   };
 }

@@ -3,6 +3,6 @@ description: Quick snapshot of the current Claude Code environment status. No re
 allowed-tools: ["Bash"]
 ---
 
-Run: `npx -y curato scan 2>&1`
+Run: `curato scan 2>&1`
 
 Show the output as-is. No follow-up questions.

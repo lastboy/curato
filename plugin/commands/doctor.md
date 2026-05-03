@@ -11,7 +11,7 @@ Output: `Running environment scan...`
 
 ## Step 2: Scan
 
-Run: `npx -y curato scan 2>&1`
+Run: `curato scan 2>&1`
 
 Show the output. If all checks show ✓, output:
 `Curato: Environment looks healthy. No repairs needed.` and STOP.
@@ -21,8 +21,8 @@ Show the output. If all checks show ✓, output:
 Based on the scan output, identify issues and propose repairs:
 - Missing Node.js v18+ → tell user to upgrade Node.js
 - Missing `.claude/` dir → run `/bootstrap-project` in Claude Code
-- Missing plugins → `npx curato install <plugin>`
-- MCP server missing → `npx curato register-mcp <name> <command>`
+- Missing plugins → `curato install <plugin>`
+- MCP server missing → `curato register-mcp <name> <command>`
 
 List the proposed repairs clearly.
 
@@ -32,11 +32,11 @@ If no: show the manual commands and STOP.
 
 ## Step 4: Apply
 
-Run the appropriate `npx -y curato` commands for each repair.
+Run the appropriate `curato` commands for each repair.
 
 ## Step 5: Verify
 
-Run: `npx -y curato scan 2>&1`
+Run: `curato scan 2>&1`
 
 If all ok: `Curato: Environment repaired and verified.`
 If still issues: `Curato: Some issues remain. Review the scan output above.`

@@ -10,7 +10,7 @@ Output: `Running smoke test...`
 
 ## Step 2: Run
 
-Run: `npx -y curato scan 2>&1`
+Run: `curato scan 2>&1`
 
 ## Step 3: Format
 

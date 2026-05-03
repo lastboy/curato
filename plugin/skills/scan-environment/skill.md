@@ -5,7 +5,7 @@ allowed-tools: ["Bash"]
 
 ## scan-environment skill
 
-Run: `npx -y curato scan 2>&1`
+Run: `curato scan 2>&1`
 
 Return the output with:
 - Each check as a ✓ / ⚠ / ✗ / ○ line

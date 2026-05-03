@@ -4,6 +4,6 @@ argument-hint: "[--keep-vars] [--dry-run]"
 allowed-tools: ["Bash"]
 ---
 
-Run: `npx -y curato uninstall-shell-env $ARGUMENTS 2>&1`
+Run: `curato uninstall-shell-env $ARGUMENTS 2>&1`
 
 Show the output as-is.

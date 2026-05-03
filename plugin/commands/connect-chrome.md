@@ -14,14 +14,14 @@ If not found: output `Install it first: npm install -g chrome-devtools-mcp` and 
 
 Run:
 ```
-npx -y curato register-mcp chrome-devtools chrome-devtools-mcp \
+curato register-mcp chrome-devtools chrome-devtools-mcp \
   --args "--browserUrl,http://127.0.0.1:9222" \
   2>&1
 ```
 
 ## Step 3: Launch Chrome in debug mode
 
-Run: `npx -y curato launch-chrome "$ARGUMENTS" 2>&1`
+Run: `curato launch-chrome "$ARGUMENTS" 2>&1`
 
 This launches Chrome with `--remote-debugging-port=9222` in an isolated profile
 (`$TMPDIR/chrome-debug-profile`), so your existing Chrome sessions are untouched.

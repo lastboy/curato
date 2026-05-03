@@ -4,6 +4,6 @@ argument-hint: "[--user] [--dry-run]"
 allowed-tools: ["Bash"]
 ---
 
-Run: `npx -y curato install-agent-guide $ARGUMENTS 2>&1`
+Run: `curato install-agent-guide $ARGUMENTS 2>&1`
 
 Show the output as-is. No follow-up questions.

@@ -5,7 +5,7 @@ allowed-tools: ["Bash", "AskUserQuestion"]
 
 ## Step 1: Dry run
 
-Run: `npx -y curato scan 2>&1` to show current state.
+Run: `curato scan 2>&1` to show current state.
 
 Present a summary of what will be removed.
 
@@ -19,13 +19,13 @@ Output: `Curato: Aborted. No changes made.` and STOP.
 
 ## Step 3: Remove plugins
 
-Run: `npx -y curato clear-cache 2>&1`
+Run: `curato clear-cache 2>&1`
 
-For each plugin shown in the scan, run: `npx -y curato uninstall <plugin-name> 2>&1`
+For each plugin shown in the scan, run: `curato uninstall <plugin-name> 2>&1`
 
 ## Step 4: Remove curato MCP server
 
-Run: `npx -y curato remove-mcp curato 2>&1`
+Run: `curato remove-mcp curato 2>&1`
 
 ## Step 5: Report
 

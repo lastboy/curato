@@ -10,7 +10,7 @@ The wrong binary is `azure-devops-mcp-server` (community package — different e
 
 ## Step 1: Remove any stale registration
 
-Run: `npx -y curato remove-mcp azure-devops 2>&1`
+Run: `curato remove-mcp azure-devops 2>&1`
 
 (This is safe even if not registered — it will say "not found".)
 
@@ -26,7 +26,7 @@ The PAT must already be set as `ADO_MCP_AUTH_TOKEN` in the shell. Do NOT ask for
 
 Run:
 ```
-npx -y curato register-mcp azure-devops <binary-path> \
+curato register-mcp azure-devops <binary-path> \
   --args "<ORG>,- d,repositories,work-items,wiki,--authentication,envvar" \
   --env "PATH=<node-bin-dir>:/usr/local/bin:/usr/bin:/bin" \
   2>&1

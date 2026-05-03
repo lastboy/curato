@@ -12,7 +12,7 @@ Output: `Loading team setup...`
 
 ## Step 2: Dry Run
 
-Run: `npx -y curato setup --dry-run 2>&1`
+Run: `curato setup --dry-run 2>&1`
 
 If the output contains "No curato-setup.json found":
 - Output:
@@ -46,7 +46,7 @@ If no: STOP.
 
 ## Step 5: Apply
 
-Run: `npx -y curato setup $ARGUMENTS 2>&1`
+Run: `curato setup $ARGUMENTS 2>&1`
 
 ## Step 6: Report
 

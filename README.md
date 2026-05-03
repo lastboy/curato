@@ -15,78 +15,22 @@ MCP servers break. Node versions mismatch. VS Code and CLI have separate registr
 
 ---
 
-## Migrating from the MCP-based version
-
-> **If you installed Curato before April 2025, read this.** The old version ran as an MCP server — a process that Claude Code loaded on every session startup, injecting 21 tool schemas into your context window before you typed a single word. The current version removes the MCP server entirely. Curato is now a CLI: the plugin calls `npx curato` via Bash only when you actually run a command.
-
-### Why migrate
-
-- **Saves ~4,000–6,000 tokens per session** — the 21 MCP tool schemas are gone from your context window permanently
-- **Env vars work correctly** — the old MCP server was spawned by VS Code without your shell environment, so `${ADO_MCP_AUTH_TOKEN}` and similar variables never expanded. The CLI runs in your terminal where those vars are set
-- **No background process** — nothing starts at Claude Code launch; `curato` only runs when you ask it to
-
-### How to migrate
-
-**Step 1 — Remove the old MCP server registration**
-
-The old server was registered under the name `curato` in both registries. Remove it:
-
-```bash
-npx curato remove-mcp curato
-```
-
-Or, if you prefer to do it manually, delete the `"curato"` key from `mcpServers` in both:
-- `~/.claude/settings.json` (VS Code extension)
-- `~/.claude.json` (Claude Code CLI)
-
-Verify it's gone:
-
-```bash
-npx curato scan
-```
-
-The `MCP servers registered` line should no longer list `curato`.
-
-**Step 2 — Clear the old plugin cache**
-
-The old plugin may have all skills loaded (no filter applied). Clear the cache so Claude Code picks up the current version:
-
-```bash
-npx curato clear-cache --plugin curato
-```
-
-**Step 3 — Reinstall the plugin with a skill filter**
-
-```bash
-npx curato install curato --exclude smoke-test
-```
-
-Or if you use `curato-setup.json`, add a skill filter there and run `npx curato setup`.
-
-**Step 4 — Reload Claude Code**
-
-Restart VS Code or run `/reload` in the Claude Code CLI to pick up the changes.
-
-That's it. Run `npx curato scan` to confirm the environment is clean.
-
----
-
 ## Quick Start
 
 ### Without config — use CLI directly
 
 ```bash
 # Install a plugin
-npx curato install superpowers
+curato install superpowers
 
 # Install with skill filter (disable specific skills to save context tokens)
-npx curato install superpowers --exclude writing-skills,subagent-driven-development
+curato install superpowers --exclude writing-skills,subagent-driven-development
 
 # Check your environment
-npx curato scan
+curato scan
 
 # Register an MCP server in both VS Code and CLI registries
-npx curato register-mcp azure-devops npx \
+curato register-mcp azure-devops npx \
   --args "-y,azure-devops-mcp-server,MyOrg,-d,repositories,work-items,--authentication,envvar" \
   --env ADO_MCP_AUTH_TOKEN=yourtoken
 ```
@@ -96,7 +40,7 @@ npx curato register-mcp azure-devops npx \
 Create a `curato-setup.json` in your project (see [Config Reference](#curatesetupjson-reference) below), then:
 
 ```bash
-npx curato setup
+curato setup
 ```
 
 That installs plugins, registers MCP servers, and writes CLAUDE.md content — for every developer, identically.
@@ -505,7 +449,7 @@ Once Curato is installed as a plugin (`curato install curato`), these slash comm
 | `/connect-chrome` | Launch Chrome in debug mode and connect Claude |
 | `/smoke-test` | 7-step validation suite |
 
-Each command calls `npx curato <subcommand>` via Bash — no MCP server process required.
+Each command calls `curato <subcommand>` via Bash — no MCP server process required.
 
 ---
 

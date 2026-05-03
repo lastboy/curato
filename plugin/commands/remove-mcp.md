@@ -11,7 +11,7 @@ If empty, ask: "Which MCP server should Curato remove?"
 
 ## Step 2: Dry run
 
-Run: `npx -y curato remove-mcp <name> --dry-run 2>&1`
+Run: `curato remove-mcp <name> --dry-run 2>&1`
 
 Show what will be removed. If not found anywhere, output:
 `Curato: No MCP server named '<name>' found in any registry.` and STOP.
@@ -24,7 +24,7 @@ If no: STOP.
 
 ## Step 4: Apply
 
-Run: `npx -y curato remove-mcp <name> 2>&1`
+Run: `curato remove-mcp <name> 2>&1`
 
 ## Step 5: Report
 

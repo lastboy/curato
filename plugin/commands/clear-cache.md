@@ -6,7 +6,7 @@ allowed-tools: ["Bash", "AskUserQuestion"]
 
 ## Step 1: Dry run
 
-Run: `npx -y curato clear-cache $ARGUMENTS --dry-run 2>&1`
+Run: `curato clear-cache $ARGUMENTS --dry-run 2>&1`
 
 If output says "Nothing matched": output `Curato: Nothing to clear. Cache is already empty.` and STOP.
 
@@ -20,7 +20,7 @@ If no: output `Curato: Aborted.` and STOP.
 
 ## Step 3: Apply
 
-Run: `npx -y curato clear-cache $ARGUMENTS 2>&1`
+Run: `curato clear-cache $ARGUMENTS 2>&1`
 
 ## Step 4: Report
 
