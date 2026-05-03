@@ -28,40 +28,47 @@ MCP servers break. Node versions mismatch. VS Code and CLI have separate registr
 
 ## Quick Start
 
-### Without config — use CLI directly
-
 ```bash
-# Install a plugin
-curato install superpowers
-
-# Install with skill filter (disable specific skills to save context tokens)
-curato install superpowers --exclude writing-skills,subagent-driven-development
-
-# Check your environment
-curato scan
-
-# Register an MCP server in both VS Code and CLI registries
-curato register-mcp azure-devops npx \
-  --args "-y,azure-devops-mcp-server,MyOrg,-d,repositories,work-items,--authentication,envvar" \
-  --env ADO_MCP_AUTH_TOKEN=yourtoken
-```
-
-### With config — team setup in one command
-
-Create a `curato-setup.json` in your project (see [Config Reference](#curatesetupjson-reference) below), then:
-
-```bash
-curato setup
-```
-
-That installs plugins, registers MCP servers, and writes CLAUDE.md content — for every developer, identically.
-
-### Global install (optional)
-
-```bash
+# 1. Install curato globally
 npm install -g curato
-curato --help
+
+# 2. Create a curato-setup.json in your project (see Config Reference below)
+#    then apply it
+curato setup
+
+# 3. Install the curato plugin so slash commands work inside Claude Code
+curato install curato
+
+# 4. Verify everything is wired up
+curato scan
 ```
+
+Reload Claude Code after setup. That's it.
+
+### Example: Chrome DevTools
+
+Add this to your `curato-setup.json` to let Claude control your browser:
+
+```json
+{
+  "version": 1,
+  "mcpServers": {
+    "chrome-devtools": {
+      "command": "chrome-devtools-mcp",
+      "args": ["--browserUrl", "http://127.0.0.1:9222"],
+      "scope": "user",
+      "enabled": true
+    }
+  }
+}
+```
+
+```bash
+curato setup        # registers the MCP server
+curato launch-chrome  # starts Chrome in debug mode
+```
+
+Then in a Claude Code session, ask: *"take a screenshot"* or *"click the login button"* — Claude will control the browser directly. No extra configuration needed.
 
 ---
 
