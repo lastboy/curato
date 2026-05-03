@@ -1,169 +1,150 @@
-# MCP Tools Reference
+# CLI Reference
 
-Curato exposes 21 MCP tools organized into five groups.
+Curato exposes 7 commands via the `curato` CLI.
 
-## Scanning & Diagnosis
+## `curato install <plugin>`
 
-Tools that read environment state without modifying anything.
+Install a Claude Code plugin with optional skill filtering.
 
-### `scan_environment`
-Full environment scan. Returns a `ScanReport` with checks for Node runtime, user setup, project layout, plugins, and MCP registrations.
+| Option | Type | Description |
+|--------|------|-------------|
+| `--exclude <skills>` | string | Comma-separated skill names to disable |
+| `--include <skills>` | string | Comma-separated skill names to keep (all others disabled) |
+| `--dry-run` | flag | Preview without applying |
 
-| Parameter | Type | Default | Description |
-|-----------|------|---------|-------------|
-| `cwd` | string | process.cwd() | Project directory to scan |
-| `scope` | `"user"` \| `"project"` \| `"full"` | `"full"` | What to scan |
+`--exclude` and `--include` are mutually exclusive. Disabled skills are renamed `.skill.md.disabled` in the plugin cache.
 
-### `inspect_user_setup`
-Returns `UserSetupInfo` — the state of `~/.claude/`, installed plugins, and user-level CLAUDE.md.
+```bash
+curato install superpowers
+curato install superpowers --exclude writing-skills,subagent-driven-development
+curato install superpowers --include brainstorming,systematic-debugging
+curato install superpowers --dry-run
+```
 
-No parameters.
+---
 
-### `inspect_project_setup`
-Returns `ProjectLayoutInfo` — whether `.claude/`, `CLAUDE.md`, `.mcp.json`, agents, commands, and skills exist in the project.
+## `curato uninstall <plugin>`
 
-| Parameter | Type | Default | Description |
-|-----------|------|---------|-------------|
-| `cwd` | string | process.cwd() | Project directory |
+Uninstall a Claude Code plugin via `claude plugin uninstall`.
 
-### `check_node_runtime`
-Returns `NodeRuntimeInfo` — Node version, npm version, nvm state, PATH analysis.
+```bash
+curato uninstall superpowers
+```
 
-No parameters.
+---
 
-### `check_mcp_registration`
-Scans both VS Code and CLI registries for MCP server entries. Reports binary resolvability.
+## `curato setup`
 
-| Parameter | Type | Default | Description |
-|-----------|------|---------|-------------|
-| `serverName` | string | _(all)_ | Filter to one server |
-| `cwd` | string | process.cwd() | Project directory (for .mcp.json) |
+Apply a `curato-setup.json` config file. Registers MCP servers, installs plugins with skill filters, writes CLAUDE.md content.
 
-## Repair & Configuration
+| Option | Type | Description |
+|--------|------|-------------|
+| `--config <path>` | string | Path to config file (default: `./curato-setup.json`) |
+| `--dry-run` | flag | Preview changes without applying |
 
-Tools that modify the environment. All require explicit `dryRun` parameter.
+```bash
+curato setup
+curato setup --config ./team/curato-setup.json
+curato setup --dry-run
+```
 
-### `recommend_setup`
-Generates `RepairProposal[]` for fixable issues. Does not apply them.
+Environment variables in `env` values (e.g. `${ADO_MCP_AUTH_TOKEN}`) are expanded from `process.env` at run time. Run `curato setup` from a terminal where those variables are set.
 
-| Parameter | Type | Default | Description |
-|-----------|------|---------|-------------|
-| `cwd` | string | process.cwd() | Project directory |
-| `goals` | string[] | _(all)_ | Filter proposals by goal |
+---
 
-### `apply_setup`
-Applies all fixable issues. Backs up files before writing.
+## `curato register-mcp <name> <command>`
 
-| Parameter | Type | Default | Description |
-|-----------|------|---------|-------------|
-| `cwd` | string | process.cwd() | Project directory |
-| `dryRun` | boolean | **required** | If true, returns proposals without applying |
-| `targets` | string[] | _(all)_ | Specific check IDs to fix |
+Register an MCP server in both VS Code (`~/.claude/settings.json`) and CLI (`~/.claude.json`) registries, or in `.mcp.json` for project scope.
 
-### `repair_setup`
-Applies specific repairs by check ID.
+| Option | Type | Description |
+|--------|------|-------------|
+| `--args <a,b,c>` | string | Comma-separated CLI arguments |
+| `--env KEY=VAL` | string (repeatable) | Environment variable |
+| `--scope` | `user` \| `project` | Registry target (default: `user`) |
+| `--dry-run` | flag | Preview without applying |
 
-| Parameter | Type | Default | Description |
-|-----------|------|---------|-------------|
-| `checkIds` | string[] | **required** | Check IDs from ScanReport |
-| `cwd` | string | process.cwd() | Project directory |
-| `dryRun` | boolean | **required** | If true, returns proposals without applying |
+```bash
+curato register-mcp azure-devops npx \
+  --args "-y,azure-devops-mcp-server,MyOrg,-d,repositories,work-items,--authentication,envvar" \
+  --env ADO_MCP_AUTH_TOKEN=mytoken
 
-### `register_mcp_both`
-Registers an MCP server in both VS Code (`~/.claude/settings.json`) and CLI (`~/.claude.json`) registries simultaneously.
+curato register-mcp local-server node \
+  --args "./server.js" \
+  --scope project
+```
 
-| Parameter | Type | Default | Description |
-|-----------|------|---------|-------------|
-| `serverName` | string | **required** | Server name |
-| `command` | string | **required** | Binary path or command |
-| `args` | string[] | [] | Command arguments |
-| `env` | object | {} | Environment variables |
-| `dryRun` | boolean | **required** | If true, returns proposal |
+---
 
-### `remove_mcp_server`
-Removes an MCP server from all registries (VS Code, CLI, project `.mcp.json`).
+## `curato remove-mcp <name>`
 
-| Parameter | Type | Default | Description |
-|-----------|------|---------|-------------|
-| `serverName` | string | **required** | Server name |
-| `dryRun` | boolean | **required** | If true, returns proposal |
+Remove an MCP server from all registries (`settings.json`, `.claude.json`, `settings.local.json`, `.mcp.json`).
 
-## Plugin Management
+| Option | Type | Description |
+|--------|------|-------------|
+| `--dry-run` | flag | Preview without applying |
 
-### `check_plugin_state`
-Validates installed plugins — checks `plugin.json` schema, version, and directory structure.
+```bash
+curato remove-mcp azure-devops
+curato remove-mcp my-server --dry-run
+```
 
-| Parameter | Type | Default | Description |
-|-----------|------|---------|-------------|
-| `pluginName` | string | _(all)_ | Filter to one plugin |
+---
 
-### `remove_plugin`
-Uninstalls a plugin and clears its cache.
+## `curato scan`
 
-| Parameter | Type | Default | Description |
-|-----------|------|---------|-------------|
-| `pluginName` | string | **required** | Plugin to remove |
-| `dryRun` | boolean | **required** | If true, returns proposal |
+Snapshot of the current Claude Code environment. Read-only — no changes.
 
-### `clear_plugin_cache`
-Clears plugin cache — one plugin, one marketplace, or everything.
+| Option | Type | Description |
+|--------|------|-------------|
+| `--json` | flag | Output raw JSON (machine-readable) |
 
-| Parameter | Type | Default | Description |
-|-----------|------|---------|-------------|
-| `pluginName` | string | _(all)_ | Clear one plugin's cache |
-| `marketplaceName` | string | _(all)_ | Clear one marketplace |
-| `dryRun` | boolean | **required** | If true, returns proposal |
+```bash
+curato scan
+curato scan --json
+```
 
-## Team Setup
+**Output:**
 
-### `apply_team_setup`
-Reads `curato-setup.json`, resolves inheritance (`extends`), and applies the team standard: MCP servers, plugins, skill filters, and CLAUDE.md content.
+```
+Curato — environment scan
 
-| Parameter | Type | Default | Description |
-|-----------|------|---------|-------------|
-| `configPath` | string | `./curato-setup.json` | Config file path |
-| `cwd` | string | process.cwd() | Project directory |
-| `dryRun` | boolean | **required** | If true, returns proposal |
+✓  Node.js runtime                 v22.14.0
+✓  Claude settings.json            /Users/you/.claude/settings.json
+○  User CLAUDE.md                  not found
+✓  MCP servers registered          azure-devops, chrome-devtools
+✓  Plugins installed               superpowers
+○  Project .claude/ dir            not found (use /bootstrap-project in Claude Code)
 
-## Built-in Connectors
+5 ok, 2 missing
+```
 
-### Chrome DevTools
+**JSON output schema:**
 
-#### `check_chrome_devtools`
-Checks if chrome-devtools-mcp is installed and registered.
+```json
+{
+  "checks": [
+    { "id": "node-runtime", "label": "Node.js runtime", "status": "ok", "detail": "v22.14.0" }
+  ],
+  "counts": { "ok": 4, "warn": 0, "error": 0, "missing": 2 }
+}
+```
 
-#### `setup_chrome_devtools`
-Installs chrome-devtools-mcp, registers in both MCP registries, creates the debug launcher script.
+---
 
-#### `launch_chrome_debug`
-Launches Chrome with remote debugging enabled on port 9222.
+## `curato clear-cache`
 
-### Azure DevOps
+Delete plugin cache directories. Forces Claude Code to re-download plugins on next launch.
 
-#### `launch_azure_auth`
-Forces re-authentication of the Azure DevOps MCP server by killing the stale process.
+| Option | Type | Description |
+|--------|------|-------------|
+| `--plugin <name>` | string | Only clear cache for this plugin |
+| `--marketplace <name>` | string | Only clear cache for this marketplace |
+| `--dry-run` | flag | Preview without deleting |
 
-## Smoke Testing
+```bash
+curato clear-cache
+curato clear-cache --plugin superpowers
+curato clear-cache --dry-run
+```
 
-### `create_smoke_test_app`
-Scaffolds a minimal test fixture with `package.json` and `CLAUDE.md`.
-
-| Parameter | Type | Default | Description |
-|-----------|------|---------|-------------|
-| `targetDir` | string | **required** | Directory to create fixture in |
-
-### `run_smoke_test`
-Runs 7-step validation: node reachable, server built, plugin readable, doctor command exists, MCP round-trip, scan returns data, fixture cleanup.
-
-| Parameter | Type | Default | Description |
-|-----------|------|---------|-------------|
-| `fixtureDir` | string | `smoke-test-fixture/` | Fixture directory |
-
-## Full Teardown
-
-### `uninstall_curato`
-Removes all plugins installed by Curato, removes all MCP server registrations, clears all plugin caches.
-
-| Parameter | Type | Default | Description |
-|-----------|------|---------|-------------|
-| `dryRun` | boolean | **required** | If true, returns proposal |
+Cache location: `~/.claude/plugins/cache/<marketplace>/<plugin>/`

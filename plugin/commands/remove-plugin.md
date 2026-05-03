@@ -1,46 +1,25 @@
 ---
 description: Uninstall a named Claude Code plugin and clear its cache.
 argument-hint: "<plugin-name>"
-allowed-tools: ["mcp__curato__remove_plugin", "AskUserQuestion"]
+allowed-tools: ["Bash", "AskUserQuestion"]
 ---
-
-You are the Curato assistant. Remove a plugin cleanly.
 
 ## Step 1: Get plugin name
 
 If `$ARGUMENTS` is non-empty, use it as the plugin name.
 If empty, ask: "Curato: Which plugin should I remove?"
 
-## Step 2: Dry run
+## Step 2: Confirm
 
-Call `remove_plugin` with the plugin name and `dryRun: true`.
+Ask: "Uninstall '<name>'? (yes/no)"
 
-- If `matchingKeys` is empty → output `Curato: Plugin '<name>' is not installed. Nothing to remove.` and STOP.
-- Otherwise show:
-  ```
-  Curato: Found plugin '<name>' — here's what will be removed:
-    Keys:      <matchingKeys joined by ", ">
-    Cache dirs: <cacheDirs, one per line>
-  ```
+If no: output `Curato: Aborted.` and STOP.
 
-## Step 3: Confirm
+## Step 3: Apply
 
-Ask: "Remove '<name>' and clear its cache? (yes/no)"
+Run: `npx -y curato uninstall <name> 2>&1`
 
-If no → output `Curato: Aborted. No changes made.` and STOP.
+## Step 4: Report
 
-## Step 4: Apply
-
-Call `remove_plugin` with `dryRun: false`.
-
-## Step 5: Report
-
-```
-Curato: Plugin '<name>' removed.
-
-  Cache cleared: <cacheDirsRemoved, one per line, or "none">
-  Backup:        <backupDir or "none">
-  Errors:        <errors, one per line, or "none">
-
-Reload your Claude Code window for the change to take effect.
-```
+Show the output. Then:
+`Reload your Claude Code window for the change to take effect.`

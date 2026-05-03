@@ -54,7 +54,7 @@ Before any further Windows work, every tool must have tests to prevent regressio
 
 ### Phase 2 — Platform utility module  ✅ DONE (prior to feat/windows-fixes)
 
-`mcp-server/src/utils/platform.ts` is the single source of truth for all platform branching:
+`cli/src/utils/platform.ts` is the single source of truth for all platform branching:
 
 | Export | Windows | Unix/macOS |
 |---|---|---|

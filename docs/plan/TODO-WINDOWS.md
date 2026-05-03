@@ -19,22 +19,6 @@ Tracked here for when Mac validation is done and Windows work begins.
 - [ ] **`tools/team.ts`**: `spawnSync('claude', ...)` — on Windows the Claude CLI is
   `claude.cmd`. Replace with a helper that appends `.cmd` on `process.platform === 'win32'`.
 
-## Scripts — Need PowerShell equivalents
-
-All `.sh` scripts are bash-only. Windows users should use WSL as an interim workaround.
-Long term, create PowerShell equivalents or rewrite as cross-platform Node scripts.
-
-| Bash script | Windows path | Notes |
-|---|---|---|
-| `scripts/install.sh` | `scripts/install.ps1` or `scripts/install.js` | Most critical |
-| `scripts/doctor.sh` | `scripts/doctor.ps1` | Standalone diagnostic |
-| `scripts/init-team.sh` | `scripts/init-team.ps1` | Uses python3, which may not be present |
-| `scripts/smoke-test.sh` | `scripts/smoke-test.ps1` | |
-| `scripts/bootstrap-project.sh` | `scripts/bootstrap-project.ps1` | |
-
-**Recommended approach:** Rewrite as Node.js scripts (`scripts/*.js`) so a single
-implementation works everywhere. Eliminates bash AND PowerShell maintenance split.
-
 ## Paths
 
 - [ ] `scanner/claude-config.ts`: `getClaudeDir()` uses `homedir()` which returns

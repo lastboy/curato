@@ -1,52 +1,38 @@
 ---
 description: Connect the azure-devops MCP server — removes stale registrations, registers the correct binary in both CLI and VS Code registries with envvar PAT auth, then instructs user to reload.
-allowed-tools: ["mcp__curato__check_mcp_registration", "mcp__curato__remove_mcp_server", "mcp__curato__register_mcp_both"]
+allowed-tools: ["Bash", "AskUserQuestion"]
 ---
 
-You are connecting the Azure DevOps MCP server. 
+You are connecting the Azure DevOps MCP server.
 
 The correct binary is `mcp-server-azuredevops` (`@azure-devops/mcp`, Microsoft's package).
 The wrong binary is `azure-devops-mcp-server` (community package — different env vars, does not work).
 
-## Step 1: Check current state
+## Step 1: Remove any stale registration
 
-Call `check_mcp_registration` with `serverName: "azure-devops"`.
+Run: `npx -y curato remove-mcp azure-devops 2>&1`
 
-Inspect all returned entries. An entry is **correct** if:
-- `command` ends with `mcp-server-azuredevops`
-- `args` includes `"--authentication"` and `"envvar"`
+(This is safe even if not registered — it will say "not found".)
 
-An entry is **stale/wrong** if:
-- `command` ends with `azure-devops-mcp-server` (wrong binary), OR
-- `command` ends with `mcp-server-azuredevops` but is missing `--authentication envvar` args
+## Step 2: Resolve binary path and org name
 
-If ALL entries are correct AND both `source: "vscode"` and `source: "cli"` are present → output:
-`Curato: azure-devops already correctly registered in both registries.` and STOP.
+Run: `which mcp-server-azuredevops 2>&1` to get the absolute binary path.
 
-Otherwise proceed to Step 2.
+Ask the user for their Azure DevOps org name (e.g. `MyOrg`) if not already known.
 
-## Step 2: Remove stale registrations
+The PAT must already be set as `ADO_MCP_AUTH_TOKEN` in the shell. Do NOT ask for it or hardcode it.
 
-If any stale/wrong entry exists, call `remove_mcp_server` with `serverName: "azure-devops"` to clear both registries.
+## Step 3: Register
 
-## Step 3: Resolve the binary path and org name
+Run:
+```
+npx -y curato register-mcp azure-devops <binary-path> \
+  --args "<ORG>,- d,repositories,work-items,wiki,--authentication,envvar" \
+  --env "PATH=<node-bin-dir>:/usr/local/bin:/usr/bin:/bin" \
+  2>&1
+```
 
-Before registering, resolve:
-1. Run `which mcp-server-azuredevops` in a bash tool call to get the absolute binary path.
-2. Ask the user for their Azure DevOps org name (e.g. `MyOrg`) if not already known from context.
-
-The PAT must already be exported in the shell as `ADO_MCP_AUTH_TOKEN`. Do NOT ask for it or hardcode it — it is read from the environment at runtime.
-
-## Step 4: Register in both registries (envvar auth)
-
-Call `register_mcp_both` with:
-- `serverName`: `"azure-devops"`
-- `command`: _(absolute path from `which mcp-server-azuredevops`)_
-- `args`: `["<ORG_NAME>", "-d", "repositories", "work-items", "wiki", "--authentication", "envvar"]`
-- `env`: `{ "PATH": "<node_bin_dir>:/usr/local/bin:/usr/bin:/bin" }` _(do NOT include the token)_
-- `dryRun`: `false`
-
-## Step 5: Done
+## Step 4: Done
 
 Output:
 ```

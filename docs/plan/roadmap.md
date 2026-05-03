@@ -22,8 +22,8 @@ Core environment management for Claude Code on macOS and Linux.
 Make installation zero-effort.
 
 ### Planned
-- [ ] npm package (`npx @lastboy/curato install`)
-- [ ] Smart Node path resolution at install time — resolve absolute `node` binary path and hardcode in MCP registration to avoid nvm/PATH issues
+- [ ] Publish to npm (`npx curato install`)
+- [ ] Smart Node path resolution at install time — resolve absolute `node` binary path and hardcode in registration to avoid nvm/PATH issues
 - [ ] Post-install smoke test (automatic)
 - [ ] `curato update` command — pull latest and re-register
 - [ ] Improve README with screenshots / terminal recordings

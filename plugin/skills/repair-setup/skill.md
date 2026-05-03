@@ -1,25 +1,22 @@
 ---
-description: Run a dry-run repair proposal, confirm with the user, then apply repairs. Always backs up files before writing. Use this skill from /repair or repair-agent.
-allowed-tools: ["mcp__curato__recommend_setup", "mcp__curato__repair_setup", "mcp__curato__apply_setup", "AskUserQuestion"]
+description: Run a dry-run scan, confirm with the user, then apply repairs via curato CLI. Use this skill from /repair or repair-agent.
+allowed-tools: ["Bash", "AskUserQuestion"]
 ---
 
 ## repair-setup skill
 
-**Step 1:** Call `recommend_setup` to get `RepairProposal[]`.
+**Step 1:** Run `npx -y curato scan 2>&1` to get current state.
 
-**Step 2:** If proposals is empty — stop. Reply: "No fixable issues found."
+**Step 2:** If all checks pass — stop. Reply: "No fixable issues found."
 
-**Step 3:** Show a numbered list of proposals with `targetPath` and `action`.
+**Step 3:** Based on the scan output, determine the appropriate `npx curato` commands to fix each issue. Show a numbered list.
 
 **Step 4:** Ask the user: "Apply these N repair(s)? (yes/no)"
 
-**Step 5 (if yes):** Call `repair_setup` with:
-- `dryRun: false`
-- `checkIds`: the IDs from the proposals
+**Step 5 (if yes):** Run each repair command via Bash.
 
-**Step 6:** Report results. If `backupDir` is set in the response, always mention it.
+**Step 6:** Run `npx -y curato scan 2>&1` again and report final state.
 
 **Safety rules:**
-- Never call repair_setup with dryRun:false without explicit user confirmation
-- Never modify files outside the proposed repair paths
-- Always mention the backupDir so the user knows they can roll back
+- Never apply repairs without explicit user confirmation
+- Never modify files outside what curato CLI would touch

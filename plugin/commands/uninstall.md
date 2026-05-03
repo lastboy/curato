@@ -1,46 +1,34 @@
 ---
-description: Full teardown — uninstall all plugins, remove all MCP servers, and clear all plugin caches.
-allowed-tools: ["mcp__curato__uninstall_curato", "AskUserQuestion"]
+description: Full teardown — uninstall all plugins, remove curato MCP server, and clear all plugin caches.
+allowed-tools: ["Bash", "AskUserQuestion"]
 ---
-
-You are the Curato assistant. Full environment teardown.
 
 ## Step 1: Dry run
 
-Call `uninstall_curato` with `dryRun: true`.
+Run: `npx -y curato scan 2>&1` to show current state.
 
-Present a summary:
-```
-Curato: Here's what a full uninstall will do:
-
-  Plugins to remove:     <pluginsRemoved joined by ", " or "none">
-  MCP servers to remove: <mcpServersRemoved joined by ", " or "none">
-  Cache dirs to clear:   <cacheDirsCleared.length> director(ies)
-```
-
-If all three lists are empty → output `Curato: Nothing installed. Environment is already clean.` and STOP.
+Present a summary of what will be removed.
 
 ## Step 2: Confirm
 
 Ask exactly:
-"This will fully remove all Claude Code plugins, MCP servers, and plugin caches. Type CONFIRM to proceed or anything else to cancel."
+"This will uninstall all plugins and remove the curato MCP server. Type CONFIRM to proceed or anything else to cancel."
 
-If the user does NOT type exactly `CONFIRM` (case-sensitive) → output `Curato: Aborted. No changes made.` and STOP.
+If the user does NOT type exactly `CONFIRM` (case-sensitive):
+Output: `Curato: Aborted. No changes made.` and STOP.
 
-## Step 3: Apply
+## Step 3: Remove plugins
 
-Call `uninstall_curato` with `dryRun: false`.
+Run: `npx -y curato clear-cache 2>&1`
 
-## Step 4: Report
+For each plugin shown in the scan, run: `npx -y curato uninstall <plugin-name> 2>&1`
 
-```
-Curato: Uninstall complete.
+## Step 4: Remove curato MCP server
 
-  Plugins removed:     <pluginsRemoved joined by ", " or "none">
-  MCP servers removed: <mcpServersRemoved joined by ", " or "none">
-  Cache cleared:       <cacheDirsCleared.length> director(ies)
-  Backups:             <backupDirs joined by ", " or "none">
-  Errors:              <errors, one per line, or "none">
+Run: `npx -y curato remove-mcp curato 2>&1`
 
-Reload your Claude Code window. Run /doctor to verify the environment is clean.
-```
+## Step 5: Report
+
+Show all output.
+
+`Reload your Claude Code window. Run /doctor to verify the environment is clean.`
