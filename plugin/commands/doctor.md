@@ -1,84 +1,42 @@
 ---
-description: Run a full Claude Code environment health check. Scans Node runtime, user setup, project layout, plugins, and MCP registrations. Offers to repair fixable issues.
-argument-hint: "[--project-only | --user-only]"
-allowed-tools: ["mcp__curato__scan_environment", "mcp__curato__inspect_user_setup", "mcp__curato__inspect_project_setup", "mcp__curato__check_node_runtime", "mcp__curato__check_plugin_state", "mcp__curato__check_mcp_registration", "mcp__curato__recommend_setup", "mcp__curato__repair_setup", "AskUserQuestion"]
+description: Full environment scan + interactive repair
+allowed-tools: ["Bash", "AskUserQuestion"]
 ---
 
-You are running a Curato health check. 
-
-## Step 0: Pre-flight Check
-
-Before doing anything else, check whether the `scan_environment` MCP tool is available to you.
-
-If it is NOT available:
-1. Output:
-   ```
-   Curato: MCP server not connected.
-
-   The curato MCP server is not running in this session.
-   This usually means one of:
-     • Node.js is not installed (required: v18+)
-     • The MCP server was not built: cd mcp-server && npm run build
-     • The server is not registered: bash scripts/install.sh
-     • The window was not reloaded after install: reload your Claude Code window
-
-   Fallback: run the bash doctor instead:
-     bash scripts/doctor.sh
-   ```
-2. STOP. Do not continue.
+You are the Curato doctor. Diagnose and repair the Claude Code environment.
 
 ## Step 1: Announce
 
-Output exactly: `Scanning environment...`
+Output: `Running environment scan...`
 
-## Step 2: Parallel Scan
+## Step 2: Scan
 
-Run ALL four of these tool calls in parallel (single message, multiple calls):
-- `scan_environment` with `scope: "full"`
-- `check_node_runtime`
-- `check_plugin_state`
-- `check_mcp_registration`
+Run: `curato scan 2>&1`
 
-## Step 3: Format Report
+Show the output. If all checks show ✓, output:
+`Curato: Environment looks healthy. No repairs needed.` and STOP.
 
-Parse the ScanReport JSON from `scan_environment`. Present results as a markdown table:
+## Step 3: Diagnose
 
-```
-| ID | Check | Status | Detail |
-|----|-------|--------|--------|
-```
+Based on the scan output, identify issues and propose repairs:
+- Missing Node.js v18+ → tell user to upgrade Node.js
+- Missing `.claude/` dir → run `/bootstrap-project` in Claude Code
+- Missing plugins → `curato install <plugin>`
+- MCP server missing → `curato register-mcp <name> <command>`
 
-Use these status indicators (with emoji):
-- `✓ OK` for severity "ok"
-- `⚠ WARN` for severity "warn"
-- `✗ ERROR` for severity "error"
-- `○ MISSING` for severity "missing"
+List the proposed repairs clearly.
 
-Group by category: Node Runtime, User Setup, Project Layout, Plugins, MCP Servers.
+Ask: "Apply these repairs? (yes/no)"
 
-Also show the Node runtime info from `check_node_runtime` and plugin list from `check_plugin_state` as supplemental context below the table.
+If no: show the manual commands and STOP.
 
-## Step 4: Summary Line
+## Step 4: Apply
 
-Output: `Found: X ok, Y warn, Z error, W missing.`
+Run the appropriate `curato` commands for each repair.
 
-## Step 5: Offer Repairs
+## Step 5: Verify
 
-If any checks have severity "error", "missing", or "warn" AND `fixable: true`:
+Run: `curato scan 2>&1`
 
-Ask the user: "Found N fixable issues. Repair now? Reply with 'yes' to proceed or 'no' to see manual steps."
-
-If yes:
-1. Call `recommend_setup` to get proposals
-2. Show the proposals as a numbered list with before/after
-3. Call `repair_setup` with `dryRun: false` and the relevant `checkIds` — no further confirmation needed
-4. Output: "Repairs applied." followed by what changed
-
-If no:
-- For each fixable check, show `check.fix` as a manual step
-
-## Step 6: Final Status
-
-If all checks pass: `Curato is operational.`
-If warnings remain: `Scan complete. Review warnings above before proceeding.`
-If errors remain: `Anomalies detected. Manual intervention required.`
+If all ok: `Curato: Environment repaired and verified.`
+If still issues: `Curato: Some issues remain. Review the scan output above.`

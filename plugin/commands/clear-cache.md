@@ -1,46 +1,28 @@
 ---
 description: Clear Claude Code plugin cache — for one plugin, one marketplace, or everything.
 argument-hint: "[--plugin <name>] [--marketplace <name>]"
-allowed-tools: ["mcp__curato__clear_plugin_cache"]
+allowed-tools: ["Bash", "AskUserQuestion"]
 ---
 
-You are the Curato assistant. Clear plugin cache.
+## Step 1: Dry run
 
-## Step 1: Parse arguments
+Run: `curato clear-cache $ARGUMENTS --dry-run 2>&1`
 
-From `$ARGUMENTS`:
-- `--plugin <name>` → set `pluginName`
-- `--marketplace <name>` → set `marketplaceName`
-- No args → clear all caches
+If output says "Nothing matched": output `Curato: Nothing to clear. Cache is already empty.` and STOP.
 
-## Step 2: Dry run
+Show the list of directories that will be deleted.
 
-Call `clear_plugin_cache` with parsed filters and `dryRun: true`.
+## Step 2: Confirm
 
-- If `wouldClear` is empty → output `Curato: Nothing to clear. Cache is already empty.` and STOP.
-- Otherwise output:
-  ```
-  Curato: The following cache directories will be deleted:
-    <wouldClear, one per line>
-  ```
+Ask: "Clear these directories? (yes/no)"
 
-## Step 3: Confirm
+If no: output `Curato: Aborted.` and STOP.
 
-Ask: "Clear these <N> director(ies)? (yes/no)"
+## Step 3: Apply
 
-If no → output `Curato: Aborted. No changes made.` and STOP.
+Run: `curato clear-cache $ARGUMENTS 2>&1`
 
-## Step 4: Apply
+## Step 4: Report
 
-Call `clear_plugin_cache` with `dryRun: false`.
-
-## Step 5: Report
-
-```
-Curato: Cache cleared.
-
-  Cleared: <cleared count> director(ies)
-  Errors:  <errors, one per line, or "none">
-
-Run /smoke-test to verify the environment is still operational.
-```
+Show the output. Then:
+`Run /smoke-test to verify the environment is still operational.`

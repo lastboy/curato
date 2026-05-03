@@ -1,34 +1,30 @@
 ---
-description: Install, configure, and auto-connect chrome-devtools-mcp so Claude can inspect, debug, and interact with your browser. Fully automated — no manual steps.
+description: Install, configure, and auto-connect chrome-devtools-mcp so Claude can inspect, debug, and interact with your browser.
 argument-hint: "[--start-url http://localhost:3000] [--port 9222]"
-allowed-tools: ["mcp__curato__check_chrome_devtools", "mcp__curato__setup_chrome_devtools", "mcp__curato__launch_chrome_debug", "AskUserQuestion"]
+allowed-tools: ["Bash", "AskUserQuestion"]
 ---
 
-You are the Curato assistant. Execute these steps IN ORDER. Do NOT stop early. Do NOT show manual instructions.
+## Step 1: Install chrome-devtools-mcp globally
 
-## STEP 1 — Check status
+Run: `npm install -g chrome-devtools-mcp 2>&1`
 
-Call `check_chrome_devtools` with `cwd`.
+## Step 2: Register
 
-## STEP 2 — Install if needed
+Run: `curato register-mcp chrome-devtools chrome-devtools-mcp --args "--browserUrl,http://127.0.0.1:9222" 2>&1`
 
-IF `npmInstalled: false` OR `mcpRegistered: false`:
-  - Ask the user: "What URL does your dev server run on? (default: http://localhost:3000)"
-  - Call `setup_chrome_devtools` with `dryRun: false`, `startUrl`, `cwd`
-  - IF `reloadRequired: true`: output "Reload required: Cmd+Shift+P → Developer: Reload Window" and STOP.
+## Step 3: Launch Chrome
 
-## STEP 3 — Launch Chrome debug (MANDATORY — always run this step)
+Parse `--start-url` and `--port` from $ARGUMENTS (defaults: http://localhost:3000, 9222).
 
-Call `launch_chrome_debug` with `cwd` and `startUrl` (use http://localhost:3000 if not specified by user).
+On macOS: `open -a "Google Chrome" --args --remote-debugging-port=<port> <start-url>`
+On Linux: `google-chrome --remote-debugging-port=<port> <start-url> &`
+On Windows: `start chrome --remote-debugging-port=<port> <start-url>`
 
-Output based on result:
-- `alreadyRunning: true` → `Curato: Chrome debug already running on port 9222.`
-- `launched: true` → `Curato: Chrome debug launched on port 9222.`
-- `launched: false` → `Curato: Could not auto-launch Chrome. Error: {error}`
+## Step 4: Done
 
-## STEP 4 — Done
-
-Output exactly:
+Output:
 ```
-Curato: Chrome DevTools ready. Claude has live browser access.
+Curato: chrome-devtools-mcp installed and registered.
+
+Reload your Claude Code window:  Cmd+Shift+P → Developer: Reload Window
 ```

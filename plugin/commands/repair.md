@@ -1,84 +1,36 @@
 ---
 description: Interactively repair broken Claude Code setup — plugins, MCP registration, CLAUDE.md, Node PATH, and missing project structure.
 argument-hint: "[check-id ...]"
-allowed-tools: ["mcp__curato__scan_environment", "mcp__curato__recommend_setup", "mcp__curato__repair_setup", "mcp__curato__apply_setup", "AskUserQuestion"]
+allowed-tools: ["Bash", "AskUserQuestion"]
 ---
 
-You are running Curato repair mode. Curato is ready.
+You are the Curato repair agent.
 
-## Step 0: Pre-flight Check
+## Step 1: Scan
 
-Check whether the `scan_environment` MCP tool is available.
+Run: `curato scan 2>&1`
 
-If it is NOT available:
-1. Output:
-   ```
-   Curato: MCP server not connected. Cannot run repairs.
+Show the output. If all checks pass, output:
+`Curato: Nothing to repair. Environment is healthy.` and STOP.
 
-   To fix:
-     1. Install Node.js v18+: https://nodejs.org
-     2. cd mcp-server && npm run build
-     3. bash scripts/install.sh
-     4. Reload your Claude Code window
-   ```
-2. STOP.
+## Step 2: Propose repairs
 
-## Step 1: Determine Scope
+Based on the scan, identify what needs fixing. If specific check IDs were passed in $ARGUMENTS, focus on those.
 
-If $ARGUMENTS are provided, treat them as specific check IDs to repair.
-Otherwise run `scan_environment scope="full"` to find all issues.
+List proposed repairs with the curato CLI commands to run.
 
-## Step 2: Get Proposals
+Ask: "Apply these repairs? (yes/no)"
 
-Call `recommend_setup` to get the list of RepairProposal objects.
+If no: show the manual steps and STOP.
 
-If no proposals are returned:
-- Output: `No fixable issues found. Environment looks clean.`
-- Stop.
+## Step 3: Apply
 
-## Step 3: Present Proposals
+Run the appropriate `curato` commands.
 
-Show a numbered list:
+Show output for each.
 
-```
-Preparing repairs...
+## Step 4: Verify
 
-N repair(s) proposed:
+Run: `curato scan 2>&1`
 
-1. [create-if-missing] ~/.claude/CLAUDE.md
-   → Scaffold user-level CLAUDE.md with section template
-
-2. [create-if-missing] ./CLAUDE.md
-   → Scaffold project CLAUDE.md with section template
-```
-
-## Step 4: Confirm
-
-Ask: "Apply these N repair(s)? (yes/no)"
-
-If no: stop. Show the `fix` hint from each check for manual steps.
-
-## Step 5: Apply
-
-Call `repair_setup` with:
-- `dryRun: false`
-- `checkIds`: the IDs from the proposals
-
-## Step 6: Report
-
-Output:
-```
-Repairs applied.
-
-Applied:
-  ✓ ~/.claude/CLAUDE.md — created
-  ✓ ./CLAUDE.md — created
-
-Backup: ~/.curato-backups/<timestamp>/
-```
-
-If backupDir is present in the result, always mention it.
-
-## Step 7: Suggest Next Step
-
-"Run /smoke-test to verify the environment is operational."
+Report final state.

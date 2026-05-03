@@ -1,6 +1,7 @@
 # Dev/test files
-mcp-server/src/__tests__/
-mcp-server/node_modules/
+cli/src/
+cli/run-tests.js
+cli/tsconfig.json
 *.tsbuildinfo
 *.d.ts.map
 *.js.map
@@ -22,7 +23,5 @@ Thumbs.db
 .history/
 .curato-backups/
 smoke-test-fixture/
-
-# Shell scripts (Node.js equivalents are included)
-scripts/*.sh
-chrome-debug.sh
+curato-setup-*.json
+curato-setup.local.json

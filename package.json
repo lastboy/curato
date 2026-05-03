@@ -10,27 +10,23 @@
     "README.md",
     "LICENSE",
     "bin/",
-    "scripts/*.js",
-    "mcp-server/src/**/*.ts",
-    "!mcp-server/src/__tests__/",
-    "mcp-server/dist/**/*.js",
-    "mcp-server/dist/**/*.d.ts",
-    "mcp-server/package.json",
-    "mcp-server/tsconfig.json",
+    "cli/dist/**/*.js",
+    "cli/dist/**/*.d.ts",
+    "cli/package.json",
+    "cli/tsconfig.json",
     "plugin/",
     "marketplace/",
-    "chrome-debug.js",
     "curato-setup.json"
   ],
   "workspaces": [
-    "mcp-server"
+    "cli"
   ],
   "scripts": {
-    "build": "npm run build --workspace=mcp-server",
-    "test": "npm run test --workspace=mcp-server",
-    "test:unit": "npm run test:unit --workspace=mcp-server",
-    "test:integration": "npm run test:integration --workspace=mcp-server",
-    "start": "npm run start --workspace=mcp-server",
+    "build": "npm run build --workspace=cli",
+    "test": "npm run test --workspace=cli",
+    "test:unit": "npm run test:unit --workspace=cli",
+    "test:integration": "npm run test:integration --workspace=cli",
+    "start": "npm run start --workspace=cli",
     "prepublishOnly": "npm run build"
   },
   "keywords": [

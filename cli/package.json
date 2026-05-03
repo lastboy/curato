@@ -1,0 +1,24 @@
+{
+  "name": "curato",
+  "version": "0.1.0",
+  "description": "Curato — Claude Code environment setup, plugin management, and repair",
+  "type": "module",
+  "bin": {
+    "curato": "./dist/cli/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "test": "node run-tests.js src/__tests__/**/*.test.ts",
+    "test:unit": "node run-tests.js src/__tests__/scanner/**/*.test.ts src/__tests__/patcher/**/*.test.ts",
+    "test:integration": "node run-tests.js src/__tests__/integration/**/*.test.ts"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "tsx": "^4.21.0",
+    "typescript": "^5.4.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

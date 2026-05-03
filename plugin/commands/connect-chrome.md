@@ -1,38 +1,37 @@
 ---
-description: Connect Chrome DevTools — fixes CLI registration gap and launches Chrome in debug mode. Run this at the start of any session that needs browser access.
+description: Connect Chrome DevTools — registers chrome-devtools-mcp in both registries and launches Chrome in debug mode.
 argument-hint: "[http://localhost:3000]"
-allowed-tools: ["mcp__curato__check_chrome_devtools", "mcp__curato__repair_setup", "mcp__curato__launch_chrome_debug", "mcp__curato__setup_chrome_devtools"]
+allowed-tools: ["Bash", "AskUserQuestion"]
 ---
 
-You are the Curato assistant. Connect Chrome DevTools in the fewest steps possible.
+## Step 1: Check if chrome-devtools-mcp is installed
 
-## Step 1: Check state
+Run: `which chrome-devtools-mcp 2>&1`
 
-Call `check_chrome_devtools` with `cwd`.
+If not found: output `Install it first: npm install -g chrome-devtools-mcp` and STOP.
 
-## Step 2: Install if missing
+## Step 2: Register
 
-If `npmInstalled: false` OR `mcpRegistered: false`:
-- Call `setup_chrome_devtools` with `dryRun: false`, `startUrl` (use argument if provided, else `http://localhost:3000`), `cwd`
-- If `reloadRequired: true`: output `Curato: Reload required — Cmd+Shift+P → Developer: Reload Window` and STOP.
+Run:
+```
+curato register-mcp chrome-devtools chrome-devtools-mcp \
+  --args "--browserUrl,http://127.0.0.1:9222" \
+  2>&1
+```
 
-## Step 3: Fix CLI gap
+## Step 3: Launch Chrome in debug mode
 
-Call `repair_setup` with:
-- `checkIds: ["mcp.gap-cli.chrome-devtools"]`
-- `dryRun: false`
+Run: `curato launch-chrome "$ARGUMENTS" 2>&1`
 
-(If that checkId doesn't exist, skip silently — already registered.)
+This launches Chrome with `--remote-debugging-port=9222` in an isolated profile
+(`$TMPDIR/chrome-debug-profile`), so your existing Chrome sessions are untouched.
+Cross-platform — works on macOS, Linux, and Windows.
 
-## Step 4: Launch Chrome
-
-Call `launch_chrome_debug` with `cwd` and `startUrl` (use argument if provided, else `http://localhost:3000`).
+## Step 4: Done
 
 Output:
-- `alreadyRunning: true` → `Curato: Chrome already running on port 9222.`
-- `launched: true` → `Curato: Chrome launched on port 9222.`
-- `launched: false` → `Curato: Could not launch Chrome — {error}`
+```
+Curato: Chrome DevTools connected.
 
-## Step 5: Done
-
-Output: `Curato: Chrome DevTools ready. Claude has live browser access.`
+Reload your Claude Code window to activate the chrome-devtools MCP server.
+```

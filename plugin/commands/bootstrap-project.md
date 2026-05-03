@@ -1,53 +1,34 @@
 ---
 description: Scaffold a Claude Code project setup — creates .claude/, CLAUDE.md, and settings.local.json if missing.
 argument-hint: "[target-directory]"
-allowed-tools: ["mcp__curato__inspect_project_setup", "mcp__curato__apply_setup", "AskUserQuestion"]
+allowed-tools: ["Bash", "AskUserQuestion"]
 ---
 
-You are running Curato project bootstrap. Curato is scaffolding.
+## Step 1: Determine target
 
-## Step 0: Scope Guidance
+Use $ARGUMENTS as the target directory if provided, otherwise use the current directory.
 
-Before doing anything, output this table so the user understands where things belong:
+## Step 2: Check what exists
 
-```
-Scope reference:
+Run: `ls -la <target>/.claude/ 2>&1 && ls <target>/CLAUDE.md 2>&1 && ls <target>/.mcp.json 2>&1`
 
-| What                         | Scope   | Location                        |
-|------------------------------|---------|---------------------------------|
-| Local project MCP server     | project | .mcp.json                       |
-| Globally installed MCP tool  | user    | ~/.claude.json (claude mcp add) |
-| Plugins                      | user    | claude plugin install           |
-| Project AI instructions      | project | ./CLAUDE.md                     |
-| Company-wide AI rules        | user    | ~/.claude/CLAUDE.md             |
-| Team standard setup          | both    | curato-setup.json + /setup-team|
-```
+## Step 3: Report and confirm
 
-## Step 1: Inspect
+Show what exists and what is missing. If everything is already present:
+Output: `Curato: project already has a complete Claude Code setup.` and STOP.
 
-Call `inspect_project_setup` with `cwd` set to $ARGUMENTS (if provided) or the current working directory.
+List what will be created. Ask: "Bootstrap these files? (yes/no)"
 
-## Step 2: Report Current State
-
-Show what exists and what is missing:
-- `.claude/` directory
-- `CLAUDE.md`
-- `.mcp.json`
-
-## Step 3: Confirm Scaffold
-
-If everything already exists, output: `Curato: project already has a complete Claude Code setup.` and stop.
-
-Otherwise, list what will be created and ask: "Bootstrap these files? (yes/no)"
+If no: STOP.
 
 ## Step 4: Apply
 
-Call `apply_setup` with:
-- `dryRun: false`
-- `cwd`: the target directory
-- `targets`: only the missing check IDs (`project.claude-dir`, `project.claude-md`)
+Run the appropriate commands:
+- `mkdir -p <target>/.claude/commands <target>/.claude/agents`
+- Create `<target>/CLAUDE.md` with a template if missing
+- Create `<target>/.claude/settings.local.json` with `{}` if missing
 
 ## Step 5: Done
 
-Output what was created and suggest:
+Output what was created. Suggest:
 "Edit CLAUDE.md to add your project's architecture, stack, and conventions."
