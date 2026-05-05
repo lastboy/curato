@@ -99,6 +99,48 @@ Disabled skills are renamed `.skill.md.disabled` in the plugin cache — Claude 
 
 ---
 
+### `curato skills <plugin>`
+
+List all skills in an installed plugin with their token cost and enabled/disabled status.
+
+```
+EXAMPLES
+  curato skills curato
+  curato skills superpowers
+```
+
+Example output:
+
+```
+Skills — curato
+
+  ✓  scan-environment                    ~420 tokens   [enabled]
+  ✓  repair-setup                        ~380 tokens   [enabled]
+  ○  review-pr                           ~290 tokens   [disabled]
+
+  Loaded into context:  ~800 tokens
+  Saved by filters:     ~290 tokens
+
+  Tip: curato install curato --exclude review-pr
+       curato install curato --include scan-environment
+```
+
+**Built-in developer skills** (included in the curato plugin):
+
+| Skill | What it does |
+|-------|-------------|
+| `review-pr` | Diffs against main, flags risks, outputs a ready-to-paste PR description |
+| `explain-error` | Takes a stack trace, states the cause in one sentence and gives the fix |
+| `write-commit` | Reads staged changes, writes a conventional commit message focused on why |
+
+Disable the ones you don't use to save tokens:
+
+```bash
+curato install curato --exclude review-pr,write-commit
+```
+
+---
+
 ### `curato uninstall <plugin>`
 
 Uninstall a Claude Code plugin.
