@@ -11,6 +11,7 @@ import { launchChrome } from './commands/launch-chrome.js';
 import { installAgentGuide } from './commands/install-agent-guide.js';
 import { installShellEnvCmd } from './commands/install-shell-env.js';
 import { uninstallShellEnvCmd } from './commands/uninstall-shell-env.js';
+import { skills } from './commands/skills.js';
 import { boldStr, dim, line } from './print.js';
 const [, , command, ...args] = process.argv;
 const HELP = `
@@ -22,6 +23,7 @@ USAGE
 COMMANDS
   install <plugin>     Install a plugin with optional skill filters
   uninstall <plugin>   Uninstall a plugin
+  skills <plugin>      List skills in a plugin with token cost and enabled/disabled status
   setup                Apply curato-setup.json config
   teardown             Reverse everything curato setup applied (from the same config)
   register-mcp         Register an MCP server in Claude Code
@@ -60,6 +62,9 @@ async function main() {
                 break;
             case 'uninstall':
                 await uninstall(args);
+                break;
+            case 'skills':
+                await skills(args);
                 break;
             case 'setup':
                 await setup(args);
