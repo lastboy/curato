@@ -23,6 +23,7 @@ curato-setup.local.json
 # IDE
 .vscode/
 .idea/
+*.code-workspace
 *.swp
 *.swo
 *~

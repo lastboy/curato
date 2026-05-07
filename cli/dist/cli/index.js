@@ -12,6 +12,7 @@ import { installAgentGuide } from './commands/install-agent-guide.js';
 import { installShellEnvCmd } from './commands/install-shell-env.js';
 import { uninstallShellEnvCmd } from './commands/uninstall-shell-env.js';
 import { skills } from './commands/skills.js';
+import { cleanBackups } from './commands/clean-backups.js';
 import { boldStr, dim, line } from './print.js';
 const [, , command, ...args] = process.argv;
 const HELP = `
@@ -30,6 +31,7 @@ COMMANDS
   remove-mcp           Remove an MCP server from Claude Code
   scan                 Snapshot of the current Claude Code environment
   clear-cache          Delete plugin cache directories
+  clean-backups        Prune old timestamped backups in ~/.curato-backups/
   launch-chrome [url]  Launch Chrome with remote debugging for chrome-devtools MCP
   install-agent-guide  Append the Curato agent-role guide into CLAUDE.md
   install-shell-env    Forward shell env vars to GUI-launched apps (macOS)
@@ -83,6 +85,9 @@ async function main() {
                 break;
             case 'clear-cache':
                 await clearCache(args);
+                break;
+            case 'clean-backups':
+                await cleanBackups(args);
                 break;
             case 'launch-chrome':
                 await launchChrome(args);

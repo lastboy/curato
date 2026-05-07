@@ -2,6 +2,7 @@ import { existsSync, readFileSync, writeFileSync, mkdirSync, unlinkSync } from '
 import { spawnSync } from 'node:child_process';
 import { join, dirname } from 'node:path';
 import { homedir } from 'node:os';
+import { assertPathUnderHome } from '../utils/validate.js';
 
 export const LAUNCH_AGENT_LABEL = 'com.curato.shell-env';
 
@@ -79,8 +80,12 @@ export function installShellEnv(opts: InstallShellEnvOptions): InstallShellEnvRe
   }
 
   const sourceFile = opts.sourceFile ?? join(homedir(), '.zshrc');
+  // sourceFile is sourced by the LaunchAgent at every login — must stay under
+  // the user's home directory to prevent a malicious config (e.g. one fetched
+  // via `extends:`) from planting a per-login backdoor at /tmp/evil.sh.
+  const safeSourceFile = assertPathUnderHome(sourceFile, 'shellEnv.sourceFile');
   const plistPath = opts.targetPath ?? launchAgentPath();
-  const plistContent = buildPlist(opts.vars, sourceFile);
+  const plistContent = buildPlist(opts.vars, safeSourceFile);
 
   if (opts.dryRun) {
     return { plistPath, plistContent, wrote: false, loaded: false, vars: opts.vars };

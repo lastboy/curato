@@ -2,7 +2,7 @@ import { test, describe, before, after } from 'node:test';
 import assert from 'node:assert/strict';
 import { mkdtempSync, rmSync, existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { tmpdir } from 'node:os';
+import { homedir } from 'node:os';
 import {
   buildPlist,
   installShellEnv,
@@ -36,12 +36,23 @@ describe('installShellEnv (dryRun)', () => {
   test('returns plist content without writing', () => {
     const result = installShellEnv({
       vars: ['FOO_TOKEN'],
-      sourceFile: '/tmp/.zshrc',
+      sourceFile: join(homedir(), '.zshrc-test'),
       dryRun: true,
     });
     assert.equal(result.wrote, false);
     assert.equal(result.loaded, false);
     assert.ok(result.plistContent.includes('FOO_TOKEN'));
+  });
+
+  test('rejects sourceFile outside home directory', () => {
+    assert.throws(
+      () => installShellEnv({
+        vars: ['FOO_TOKEN'],
+        sourceFile: '/tmp/evil.sh',
+        dryRun: true,
+      }),
+      /must resolve under/,
+    );
   });
 
   test('rejects invalid var names', () => {
@@ -72,7 +83,7 @@ describe('installShellEnv + uninstallShellEnv (real filesystem, tmp target)', ()
   let plistPath: string;
 
   before(() => {
-    tmpDir = mkdtempSync(join(tmpdir(), 'curato-shell-env-'));
+    tmpDir = mkdtempSync(join(homedir(), '.curato-shell-env-test-'));
     plistPath = join(tmpDir, 'test.plist');
   });
 
@@ -81,9 +92,10 @@ describe('installShellEnv + uninstallShellEnv (real filesystem, tmp target)', ()
   });
 
   test('writes plist to targetPath when skipLoad=true', () => {
+    const fakeZshrc = join(tmpDir, 'fake.zshrc');
     const result = installShellEnv({
       vars: ['ADO_MCP_AUTH_TOKEN'],
-      sourceFile: '/tmp/fake.zshrc',
+      sourceFile: fakeZshrc,
       dryRun: false,
       targetPath: plistPath,
       skipLoad: true,
@@ -93,7 +105,7 @@ describe('installShellEnv + uninstallShellEnv (real filesystem, tmp target)', ()
     assert.ok(existsSync(plistPath), 'plist file should exist on disk');
     const content = readFileSync(plistPath, 'utf8');
     assert.ok(content.includes('ADO_MCP_AUTH_TOKEN'));
-    assert.ok(content.includes('/tmp/fake.zshrc'));
+    assert.ok(content.includes(fakeZshrc));
   });
 
   test('readInstalledVars reads var list back from installed plist', () => {

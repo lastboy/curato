@@ -2,6 +2,7 @@ import { existsSync, readdirSync, statSync, renameSync, readFileSync } from 'nod
 import { join } from 'node:path';
 import { backupFile } from './backup.js';
 import { getClaudeDir } from '../utils/platform.js';
+import { assertSafeName } from '../utils/validate.js';
 
 // ── Types ──────────────────────────────────────────────────────────────────────
 
@@ -67,6 +68,7 @@ export function compareVersions(a: string, b: string): number {
  * Pass `_cacheRoot` to override the default (useful in tests).
  */
 export function findPluginCachePath(pluginName: string, _cacheRoot?: string): string | null {
+  assertSafeName(pluginName, 'plugin');
   const cacheRoot = _cacheRoot ?? join(getClaudeDir(), 'plugins', 'cache');
   if (!existsSync(cacheRoot)) return null;
 
@@ -119,6 +121,10 @@ export function reportSkillCosts(
   const skillsDir = join(cachePath, 'skills');
   if (!existsSync(skillsDir)) return report;
 
+  if (skills) {
+    skills.include.forEach((s) => assertSafeName(s, 'skill'));
+    skills.exclude.forEach((s) => assertSafeName(s, 'skill'));
+  }
   const includeSet = skills ? new Set(skills.include) : null;
   const excludeSet = skills ? new Set(skills.exclude) : new Set<string>();
 

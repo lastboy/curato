@@ -328,5 +328,7 @@ export async function setup(argv: string[]) {
     info('dry-run complete — run without --dry-run to apply.');
   } else {
     ok('Setup complete. Reload Claude Code to pick up changes.');
+    dim('Note: backups in ~/.curato-backups/ may contain literal token values.');
+    dim('      Run `curato clean-backups` periodically to prune old copies.');
   }
 }

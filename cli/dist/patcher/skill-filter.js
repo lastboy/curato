@@ -2,6 +2,7 @@ import { existsSync, readdirSync, statSync, renameSync } from 'node:fs';
 import { join } from 'node:path';
 import { backupFile } from './backup.js';
 import { getClaudeDir } from '../utils/platform.js';
+import { assertSafeName } from '../utils/validate.js';
 // ── Helpers ────────────────────────────────────────────────────────────────────
 /** Rough estimate: 1 token ≈ 4 characters */
 function estimateTokens(bytes) {
@@ -37,6 +38,7 @@ export function compareVersions(a, b) {
  * Pass `_cacheRoot` to override the default (useful in tests).
  */
 export function findPluginCachePath(pluginName, _cacheRoot) {
+    assertSafeName(pluginName, 'plugin');
     const cacheRoot = _cacheRoot ?? join(getClaudeDir(), 'plugins', 'cache');
     if (!existsSync(cacheRoot))
         return null;
@@ -81,6 +83,10 @@ export function reportSkillCosts(pluginName, skills, _cacheRoot) {
     const skillsDir = join(cachePath, 'skills');
     if (!existsSync(skillsDir))
         return report;
+    if (skills) {
+        skills.include.forEach((s) => assertSafeName(s, 'skill'));
+        skills.exclude.forEach((s) => assertSafeName(s, 'skill'));
+    }
     const includeSet = skills ? new Set(skills.include) : null;
     const excludeSet = skills ? new Set(skills.exclude) : new Set();
     for (const entry of readdirSync(skillsDir, { withFileTypes: true })) {

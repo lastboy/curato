@@ -310,6 +310,8 @@ export async function setup(argv) {
     }
     else {
         ok('Setup complete. Reload Claude Code to pick up changes.');
+        dim('Note: backups in ~/.curato-backups/ may contain literal token values.');
+        dim('      Run `curato clean-backups` periodically to prune old copies.');
     }
 }
 //# sourceMappingURL=setup.js.map

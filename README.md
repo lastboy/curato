@@ -270,6 +270,24 @@ EXAMPLES
 
 ---
 
+### `curato clean-backups`
+
+Prune old timestamped backups in `~/.curato-backups/`. Backups created by curato may contain copies of `settings.json` with literal token values, so cleaning them periodically is recommended.
+
+```
+OPTIONS
+  --keep <N>    Keep the N most recent backups (default: 10)
+  --all         Delete every backup
+  --dry-run     Preview without deleting
+
+EXAMPLES
+  curato clean-backups
+  curato clean-backups --keep 5
+  curato clean-backups --all --dry-run
+```
+
+---
+
 ### `curato install-shell-env` (macOS)
 
 Install a LaunchAgent that forwards named shell env vars (from `~/.zshrc` by default) into launchd at login, so GUI-launched apps see them. Solves the "MCP works in terminal, fails in VS Code from Dock" issue without storing token values on disk.

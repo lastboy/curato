@@ -2,6 +2,7 @@ import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { get } from 'node:https';
 import { safeMerge } from '../patcher/json-merger.js';
+import { isAllowedRemoteHost } from '../utils/validate.js';
 function parseConfig(raw) {
     if (!raw || typeof raw !== 'object' || Array.isArray(raw))
         return null;
@@ -23,10 +24,18 @@ function readLocalConfig(filePath) {
 }
 function fetchUrl(url) {
     return new Promise((resolve, reject) => {
+        if (!isAllowedRemoteHost(url)) {
+            reject(new Error(`Refusing to fetch ${url} — host not in allowlist`));
+            return;
+        }
         get(url, (res) => {
             if (res.statusCode === 301 || res.statusCode === 302) {
                 const location = res.headers['location'];
                 if (location) {
+                    if (!isAllowedRemoteHost(location)) {
+                        reject(new Error(`Refusing redirect to ${location} — host not in allowlist`));
+                        return;
+                    }
                     fetchUrl(location).then(resolve, reject);
                     return;
                 }

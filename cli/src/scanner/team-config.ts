@@ -3,6 +3,7 @@ import { join } from 'node:path';
 import { get } from 'node:https';
 import type { TeamSetupConfig } from '../types.js';
 import { safeMerge } from '../patcher/json-merger.js';
+import { isAllowedRemoteHost } from '../utils/validate.js';
 
 function parseConfig(raw: unknown): TeamSetupConfig | null {
   if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return null;
@@ -23,10 +24,21 @@ function readLocalConfig(filePath: string): TeamSetupConfig | null {
 
 function fetchUrl(url: string): Promise<string> {
   return new Promise((resolve, reject) => {
+    if (!isAllowedRemoteHost(url)) {
+      reject(new Error(`Refusing to fetch ${url} — host not in allowlist`));
+      return;
+    }
     get(url, (res) => {
       if (res.statusCode === 301 || res.statusCode === 302) {
         const location = res.headers['location'];
-        if (location) { fetchUrl(location).then(resolve, reject); return; }
+        if (location) {
+          if (!isAllowedRemoteHost(location)) {
+            reject(new Error(`Refusing redirect to ${location} — host not in allowlist`));
+            return;
+          }
+          fetchUrl(location).then(resolve, reject);
+          return;
+        }
       }
       if (res.statusCode !== 200) {
         reject(new Error(`HTTP ${res.statusCode} fetching ${url}`));
